@@ -59,7 +59,6 @@ export const login = async (req, res) => {
 
         const token = jwt.sign({
             id: user._id,
-
         }, 
         process.env.JWT_SECRET,
         {expiresIn: '30d'})
@@ -74,6 +73,8 @@ export const login = async (req, res) => {
         res.json({message: "Ошибка авторизации"})
     }
 }
+
+
 //Get me
 export const getMe = async (req, res) => {
     try{
