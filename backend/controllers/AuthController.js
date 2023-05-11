@@ -78,8 +78,8 @@ export const login = async (req, res) => {
 //Get me
 export const getMe = async (req, res) => {
     try{
+        console.log("id = ", req.userId);
         const user = await User.findById(req.userId)
-
         if (!user) {
             return res.json({
                 message: "Такого юзера не существует"

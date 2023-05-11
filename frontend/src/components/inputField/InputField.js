@@ -6,20 +6,30 @@ const InputField = ({value, error, type, handleChange, changeField, label, place
                     value={value}
                     error={error}
                     fullWidth
-                    placeholder={placeholder} 
                     label={label}
                     type={type}
+                    placeholder={placeholder}
                     helperText={helper}
                     variant="outlined"
                     onChange={handleChange(`${changeField}`)}
                     sx={{
                         "& .MuiOutlinedInput-root": {
+                            color:"#fff",
                             "& > fieldset": { borderColor: "#EFEFEF", borderWidth: "2px", transition: "all .3s" },
+                            "& > fieldset:focus" : {
+                              borderColor: "red"
+                            },
+                            '&.Mui-focused fieldset': {
+                              borderColor: '#C8FFBE',
+                            },
                         },
                         "& .MuiOutlinedInput-root:hover": {
                             "& > fieldset": {
-                              borderColor: "#fff"
+                              borderColor: "#fff !important"
                             }
+                        },
+                        "& .MuiFormLabel-root":{
+                          color: "#fff !important"
                         },
                         borderColor: "#fff",
                         borderWidth: "2px",

@@ -7,10 +7,10 @@ import goals from "../../assets/icons/goals.svg";
 import logout from "../../assets/icons/logout.svg";
 import Tab from '../tab/Tab';
 
-const SideBar = () => {
+const SideBar = ({name}) => {
     return (
         <aside className='left-side'>
-          <AccountTab/>
+          <AccountTab name={name}/>
           <div className='side-tabs'>
           <h5 className='areas'>Areas</h5>
             <Tab icon={habitsIcon} name="Habits" isActive={true}/>

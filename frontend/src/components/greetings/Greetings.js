@@ -1,6 +1,6 @@
 import React from 'react';
 import { Typography } from '@mui/material';
-const Greetings = ({day, date}) => {
+const Greetings = ({day, date, name}) => {
     return (
         <div className="right-side__top">
             <Typography
@@ -25,7 +25,7 @@ const Greetings = ({day, date}) => {
                 variant={"h5"}
                 sx={{ fontWeight: 700, color: "#F84343" }}
               >
-                Maxim
+                {name}
               </Typography>
             </Typography>
           </div>

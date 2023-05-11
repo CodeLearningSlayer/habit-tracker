@@ -9,15 +9,7 @@ import RegisterForm from "./components/registerForm/RegisterForm";
 import AccountTab from "./components/accountTab/AccountTab";
 import Tab from "./components/tab/Tab";
 import HabitCheckBox from "./components/habitCheckBox/HabitCheckBox";
-import {
-  Container,
-  Typography,
-  Box,
-  Stack,
-  Chip,
-  Checkbox,
-  Button,
-} from "@mui/material";
+import { Container } from "@mui/material";
 import "react-circular-progressbar/dist/styles.css";
 import SideBar from "./components/sideBar/SideBar";
 import ProgressBoard from "./components/progressBoard/ProgressBoard";
@@ -29,11 +21,13 @@ import ErrorBoundary from "./components/errorBoundary/ErrorBoundary";
 
 function App() {
   const [habits, setHabits] = useState([]);
-  const [userId, setUserId] = useState();
-  const [name, setName] = useState("Maxim");
+  const [isAuth, setIsAuth] = useState(false);
+  const [name, setName] = useState("");
+  const [mode, setMode] = useState();
   const [numOfCompletedHabits, setNumOfCompletedHabits] = useState(0);
   const [totalNumOfHabits, setTotalNumOfHabits] = useState(0);
   const [percentage, setPercentage] = useState(0);
+  const [user, setUser] = useState();
 
   const dateOptions = {
     year: "numeric",
@@ -57,6 +51,8 @@ function App() {
   console.log(day);
 
   useEffect(() => {
+    getUserIfAuth();
+    setMode("login");
     getUsers();
     getHabits();
   }, []);
@@ -66,6 +62,25 @@ function App() {
       setPercentage(numOfCompletedHabits / totalNumOfHabits * 100);
     else setPercentage(0);
   }, [numOfCompletedHabits])
+
+  useEffect(() => {
+
+  }, [isAuth])
+
+  const getUserIfAuth = async () => {
+    if (localStorage.getItem('token')) {
+      setIsAuth(true)
+      const res = await fetch("http://localhost:3010/api/auth/me", {
+        method: "GET",
+        headers: new Headers(
+          {'content-type': 'application/json',
+          'authorization': localStorage.getItem('token')})
+      });
+      const data = await res.json();
+      console.log(data);
+    }
+    else setIsAuth(false) 
+  }
 
   const getUsers = async () => {
     fetch("http://localhost:3010/api/users/allUsers")
@@ -104,6 +119,27 @@ function App() {
     console.log(result);
   };
 
+  const login = async (data) => {
+      const userObj = {
+          username: data.login,
+          password: data.password
+      };
+      const res = await fetch("http://localhost:3010/api/auth/login", {
+          method: "POST",
+          headers: {
+              'Content-type': 'application/json;charset=utf-8'
+          },
+          body: JSON.stringify(userObj)
+      })
+      let result = await res.json();
+      if (result.token){
+        setIsAuth(true);
+        localStorage.setItem('token', result.token);
+        setUser(result.user);
+      }
+      console.log(result);
+  }
+
   const countCompleted = (num) => {
     setNumOfCompletedHabits(numOfCompletedHabits + num);
   }
@@ -116,28 +152,28 @@ function App() {
       setHabits(habits.filter((item) => item._id !== habitId));
     } else console.log("Error while delete habit");
   };
-
   return (
-    <div className="App">
-      <SideBar />
+      <div className="App">
+        {!isAuth && mode === "register" && <RegisterForm registerUser={registerUser}/>}
+        {!isAuth && mode === "login" && <LoginForm loginHandle={login}/>}
+        <SideBar name={user?.username} />
+        <main className="right-side">
+          <Container maxWidth="lg">
+            <div className="right-side__inner">
+              <Greetings name={user?.username} date={date} day={day}/>
+              <InfoBox numOfCompletedHabits={numOfCompletedHabits} 
+                percentage={percentage}
+                totalNumOfHabits={totalNumOfHabits}/>
+              <PickerLegend/>
 
-      <main className="right-side">
-        <Container maxWidth="lg">
-          <div className="right-side__inner">
-            <Greetings date={date} day={day}/>
-            <InfoBox numOfCompletedHabits={numOfCompletedHabits} 
-              percentage={percentage}
-              totalNumOfHabits={totalNumOfHabits}/>
-            <PickerLegend/>
-
-            <ErrorBoundary>
-              <HabitList habits={habits} numOfHabits={totalNumOfHabits} handleHabitClick={countCompleted}></HabitList>
-            </ErrorBoundary>
-          </div>
-          
-        </Container>
-      </main>
-    </div>
+              <ErrorBoundary>
+                <HabitList habits={habits} numOfHabits={totalNumOfHabits} handleHabitClick={countCompleted}></HabitList>
+              </ErrorBoundary>
+            </div>
+            
+          </Container>
+        </main>
+      </div>
   );
 }
 

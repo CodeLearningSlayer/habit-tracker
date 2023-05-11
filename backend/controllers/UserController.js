@@ -61,7 +61,6 @@ export const seeder = async () => {
                 user: await User.find().then((data) => data[1]._id)
             })
         ];
-        console.log(habits);
         
         Habit.insertMany(habits)
         .then(() => {
