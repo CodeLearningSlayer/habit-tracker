@@ -1,0 +1,44 @@
+.login{
+    max-width: 842px;
+    width: 100%;
+    padding: 15px 30px;
+    background: linear-gradient(114.22deg, rgba(44, 42, 42, 0.6) -22.28%, rgba(0, 0, 0, 0.1) 105.78%);
+    border: 1px solid #EFEFEF;
+    backdrop-filter: blur(30px);
+/* Note: backdrop-filter has minimal browser support */
+
+    border-radius: 25px;
+    &__name{
+        color: #FFFFFF;
+        font-size: 35px;
+        padding-bottom: 15px;
+        font-family: "Metrophobic", sans-serif;
+        line-height: 43px;
+        text-align: center;
+    }
+    &__forgot{
+        font-family: 'Metrophobic';
+        font-weight: 400;
+        font-size:20px;
+        line-height: 20px;
+        text-align: center;
+        color: #FFFFFF;
+
+    }
+    .forgot-wrapper{
+        margin-bottom: 25px;
+    }
+    &__register{
+        font-family: 'Metrophobic';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 18px;
+        line-height: 24px;
+        color: #FFFFFF;
+
+    }
+}
+
+// .TextField-without-border-radius{
+//     border-radius:25px;
+// }

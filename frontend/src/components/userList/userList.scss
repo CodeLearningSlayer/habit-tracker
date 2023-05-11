@@ -1,0 +1,13 @@
+.user-list{
+    &__item-delete{
+        margin-left: 15px;
+        background-color: transparent;
+        border-radius: 15px;
+        padding: 2px 15px;
+        cursor: pointer;
+        border-color: red;
+        &:hover{
+            background-color: #f0f0f0;
+        }
+    }
+}

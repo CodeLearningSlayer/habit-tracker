@@ -1,0 +1,23 @@
+.habit-form{
+    max-width: 400px;
+    padding: 15px 15px;
+    margin-bottom: 30px;
+    border: 1px solid black;
+    border-radius: 20px;
+    margin-top: 20px;
+    &__input{
+        width: 100%;
+        display: block;
+        margin-bottom: 10px;
+        padding: 5px 5px;
+    }
+    &__btn{
+        padding: 8px 15px;
+        cursor: pointer;
+        border-radius: 10px;
+        background-color: transparent;
+        &:hover{
+            background-color: #f0f0f0;
+        }
+    }
+}
