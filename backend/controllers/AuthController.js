@@ -51,8 +51,8 @@ export const login = async (req, res) => {
         const isPasswordCorrect = await bcrypt.compare(password, user.password)
 
         if (!isPasswordCorrect) {
-            return res.json({
-                message: 'Такого пользователя не существует'
+            return res.status(200).json({
+                message: 'Пароль некорректен'
             })
         }
 

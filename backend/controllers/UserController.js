@@ -63,9 +63,6 @@ export const seeder = async () => {
         ];
         console.log(habits);
         
-        
-        
-       
         Habit.insertMany(habits)
         .then(() => {
             console.log("Habits added");

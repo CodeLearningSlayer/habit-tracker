@@ -52,7 +52,7 @@ export const getAllHabits = async(req, res) => {
     try {
         const habits = await Habit.find();
         if (habits.length == 0){
-            return res.status(500).json({message: "No habits"});
+            return res.status(400).json({message: "No habits"});
         }
         
         return res.json(habits);
