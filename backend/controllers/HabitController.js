@@ -50,12 +50,12 @@ export const deleteHabit = async (req, res) => {
 
 export const getAllHabits = async(req, res) => {
     try {
-        const habits = await Habit.find();
-        if (habits.length == 0){
-            return res.status(400).json({message: "No habits"});
-        }
-        
-        return res.json(habits);
+        console.log("req.params = ", req.params);
+        const user = await User.findById(req.params.id).populate("habits").exec();
+
+        res.json({
+            habits: user.habits
+        })
     }
     catch(e) {
         console.log(e.message);

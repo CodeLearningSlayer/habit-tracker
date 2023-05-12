@@ -4,7 +4,6 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import { getAllUsers } from "./controllers/userController.js";
 import router from "./routes/index.js";
-import { seeder } from "./controllers/userController.js";
 
 dotenv.config()
 const PORT = process.env.PORT || 3029; // вынести в .env
@@ -22,6 +21,5 @@ app.listen(PORT, function () {
     console.log("CORS-Enabled web server Listening on port 80");
 })
 
-seeder();
 
 app.get("/", (req, res) => getAllUsers(req, res));
