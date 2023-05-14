@@ -4,13 +4,13 @@ import habitsIcon from "../../assets/icons/habits.svg";
 import challenges from "../../assets/icons/challenges.svg";
 import achievements from "../../assets/icons/achievements.svg";
 import goals from "../../assets/icons/goals.svg";
-import logout from "../../assets/icons/logout.svg";
+import logoutIcon from "../../assets/icons/logout.svg";
 import Tab from '../tab/Tab';
 
-const SideBar = ({name}) => {
+const SideBar = ({name, timeOfTheDay, logout}) => {
     return (
         <aside className='left-side'>
-          <AccountTab name={name}/>
+          <AccountTab name={name} timeOfTheDay={timeOfTheDay}/>
           <div className='side-tabs'>
           <h5 className='areas'>Areas</h5>
             <Tab icon={habitsIcon} name="Habits" isActive={true}/>
@@ -19,7 +19,7 @@ const SideBar = ({name}) => {
             <Tab icon={goals} name="Goals"/>
           </div>
           
-          <Tab icon={logout} name="Logout"/>
+          <Tab icon={logoutIcon} handleClick={logout} name="Logout"/>
         </aside>
     );
 };

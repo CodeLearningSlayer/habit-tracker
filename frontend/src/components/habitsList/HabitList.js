@@ -1,9 +1,10 @@
 import React from "react";
 import "./habitList.scss";
-import { Box, Stack, Chip, Checkbox, Button, Typography } from "@mui/material";
+import { Box, Stack, Chip, Button, Typography } from "@mui/material";
 import HabitCheckBox from "../habitCheckBox/HabitCheckBox";
 
-const HabitList = ({ habits, deleteHabit, numOfHabits, handleHabitClick }) => {
+const HabitList = ({ handleFilterClick, onButtonClick, habits, handleDelete, numOfHabits, handleHabitClick, filters, selectedFilter }) => {
+  console.log(filters);
   return (
     <>
       <Box>
@@ -25,45 +26,52 @@ const HabitList = ({ habits, deleteHabit, numOfHabits, handleHabitClick }) => {
             Habits - {numOfHabits}
           </Typography>
           <Box sx={{mb: "15px"}}>
-            <Chip
-              sx={{
-                borderRadius: "10px",
-                mr: "15px",
-                color: "#fff",
-                textTransform: "uppercase",
-                fontSize: "20px",
-                borderColor: "#F84343",
-              }}
-              variant="outlined"
-              onClick={() => {}}
-              label="DAILY"
-            />
-            <Chip
-              sx={{
-                borderRadius: "10px",
-                color: "#fff",
-                textTransform: "uppercase",
-                fontSize: "20px",
-                borderColor: "#F84343",
-              }}
-              onClick={() => {}}
-              label="PRODUCTIVITY"
-            />
-            <Chip
-              sx={{
-                borderRadius: "10px",
-                ml: "15px",
-                mr: "30px",
-                color: "#fff",
-                textTransform: "uppercase",
-                fontSize: "20px",
-                borderColor: "#F84343",
-              }}
-              onClick={() => {}}
-              label="SPORTS"
-            />
+          <Chip
+                sx={{
+                  borderRadius: "10px",
+                  mr: `15px`,
+                  color: "#fff",
+                  textTransform: "uppercase",
+                  fontSize: "20px",
+                  borderColor: "#F84343",
+                }}
+                onClick={() => {
+                  handleFilterClick('all');
+                }
+               }
+                label="All"
+                variant={selectedFilter === 'all' ? "outlined" : "filled"}
+              />
+            {filters.map((filter, index) => {
+              let mr;
+              let variant;
+              console.log(filter)
+              index !== filters.length - 1 ? mr = 15 : mr = 30;
+              selectedFilter === filter ? variant = "outlined" : variant = "filled";
+              return(
+                <Chip key={index}
+                sx={{
+                  borderRadius: "10px",
+                  mr: `${mr}px`,
+                  color: "#fff",
+                  textTransform: "uppercase",
+                  fontSize: "20px",
+                  borderColor: "#F84343",
+                }}
+                onClick={() => {
+                  console.log(filter);
+                  handleFilterClick(filter);
+                }
+               }
+                label={filter}
+                variant={variant}
+              />
+              )
+            })}
+            
             <Button
-              variant="outlined"
+              onClick={() => onButtonClick(true)}
+              variant={"outlined"}
               sx={{
                 fontSize: 30,
                 borderRadius: "50%",
@@ -84,7 +92,12 @@ const HabitList = ({ habits, deleteHabit, numOfHabits, handleHabitClick }) => {
           </Box>
         </Stack>
         <Stack>
-          {habits?.map((habit) => <HabitCheckBox key={habit._id} handleClick={handleHabitClick} text={habit.name}/>)}
+          {habits.length && habits.map((habit) => 
+          <HabitCheckBox key={habit._id} 
+          handleClick={handleHabitClick} 
+          text={habit.name}
+          id={habit._id}
+          handleDelete={handleDelete}/>)}
           
         </Stack>
       </Box>

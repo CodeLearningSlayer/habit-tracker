@@ -5,6 +5,7 @@
 
 .App{
     display: flex;
+    min-height: 100vh;
 }
 
 .habit{
@@ -138,3 +139,16 @@
     justify-content: center;
     padding: 20px;
 }
+
+.gradient-border-bg {
+    background: linear-gradient(#ffffff00, #ffffff00) padding-box,
+      linear-gradient(45deg, purple, orange) border-box;
+    border: 5px solid transparent;
+    border-radius: 50px;
+    padding: 10px 20px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+  }

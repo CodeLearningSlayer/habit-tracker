@@ -20,13 +20,7 @@ const Greetings = ({day, date, name}) => {
               sx={{ fontWeight: 600, fontFamily: "Nunito", color: "#fff" }}
             >
               Привет,{" "}
-              <Typography
-                display="inline"
-                variant={"h5"}
-                sx={{ fontWeight: 700, color: "#F84343" }}
-              >
-                {name}
-              </Typography>
+              <span style={{color: "#FF1818", fontWeight: 700, fontFamily: "Nunito"}}>{name}</span>
             </Typography>
           </div>
     );

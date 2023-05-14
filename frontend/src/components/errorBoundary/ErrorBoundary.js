@@ -19,7 +19,7 @@ class ErrorBoundary extends Component {
 
     render() {
         if (this.state.error) {
-            return <img src={error} alt="error-gif"/>
+            return <img src={error} alt="error-gif" style={{margin: "0 auto", padding: 15}}/>
         }
         return (
            this.props.children

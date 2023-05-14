@@ -1,7 +1,9 @@
-import { Box, Checkbox, Typography, Stack } from "@mui/material";
+import { Box, Checkbox, Typography, Stack, IconButton } from "@mui/material";
 import React, { useState } from "react";
+import DeleteIcon from "@mui/icons-material/Delete"
+import EditIcon from '@mui/icons-material/Edit';
 
-const HabitCheckBox = ({ text, handleClick}) => {
+const HabitCheckBox = ({ text, handleClick, handleDelete, handleEdit, id}) => {
   const [checked, setChecked] = useState(false);
   return (
     <Box
@@ -42,6 +44,15 @@ const HabitCheckBox = ({ text, handleClick}) => {
         >
           {text}
         </Typography>
+        <IconButton sx={{ml: "auto",}}>
+          <EditIcon sx={{color:"#AFAFAF"}}/>
+        </IconButton>
+        <IconButton onClick={(e) => {
+          handleDelete(id);
+          e.stopPropagation();
+        }} sx={{mr: "15px"}}>
+          <DeleteIcon sx={{color:"#AFAFAF"}}/>
+        </IconButton>
       </Stack>
     </Box>
   );
