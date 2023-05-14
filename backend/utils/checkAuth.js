@@ -8,12 +8,12 @@ export const checkAuth = (req, res, next) => {
             req.userId = decoded.id;
             next();
         } catch (error) {
-            return res.json({
+            return res.status(400).json({
                 message: 'Нет доступа ' + error 
             })
         } 
     } else {
-        return res.json({
+        return res.status(400).json({
             message: 'Нет доступа'
         })
     }

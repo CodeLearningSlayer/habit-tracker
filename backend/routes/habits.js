@@ -4,8 +4,8 @@ import { addHabit, deleteHabit, getAllHabits } from "../controllers/HabitControl
 
 const router = new Router();
 
-router.post("/:id/habits/add:habitId", checkAuth, addHabit);
-router.post("/:id/habits/delete:habitId", checkAuth, deleteHabit);
+router.post("/:id/habits/add", checkAuth, addHabit);
+router.post("/:id/habits/delete/:habitId", checkAuth, deleteHabit);
 router.get("/:id/allHabits", getAllHabits);
 
 
