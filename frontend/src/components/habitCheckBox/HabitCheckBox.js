@@ -3,14 +3,15 @@ import React, { useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete"
 import EditIcon from '@mui/icons-material/Edit';
 
-const HabitCheckBox = ({ text, handleClick, handleDelete, handleEdit, id}) => {
-  const [checked, setChecked] = useState(false);
+const HabitCheckBox = ({ text, handleClick, handleDelete, setHabitCompleted, checkedDef, handleEdit, id}) => {
+  const [checked, setChecked] = useState(checkedDef);
   return (
     <Box
       className={checked ? "habit--completed" : "habit--uncompleted"}
       onClick={
         () => {
             setChecked(!checked);
+            setHabitCompleted(id, !checked);
             checked ? handleClick(-1) : handleClick(1);
         }}
       width={"100%"}
@@ -44,14 +45,14 @@ const HabitCheckBox = ({ text, handleClick, handleDelete, handleEdit, id}) => {
         >
           {text}
         </Typography>
-        <IconButton sx={{ml: "auto",}}>
+        {/* <IconButton sx={{,}}>
           <EditIcon sx={{color:"#AFAFAF"}}/>
-        </IconButton>
+        </IconButton> */}
         <IconButton onClick={(e) => {
           handleDelete(id);
           e.stopPropagation();
-        }} sx={{mr: "15px"}}>
-          <DeleteIcon sx={{color:"#AFAFAF"}}/>
+        }} sx={{ml: "auto", mr: "15px"}}>
+          <DeleteIcon sx={{ color:"#AFAFAF"}}/>
         </IconButton>
       </Stack>
     </Box>

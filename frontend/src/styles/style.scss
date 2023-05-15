@@ -6,6 +6,31 @@
 .App{
     display: flex;
     min-height: 100vh;
+    overflow: hidden;
+}
+
+.grid{
+    &__overlay{
+        transition: all .3s;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-radius: 20px;
+        & button{
+            transition: all .3s;
+        }
+        &:hover{
+            background-color:rgba(0, 0, 0, 0.50);
+            & button{
+                opacity: 1;
+            }
+        }
+        &--fixed{
+            background-color:rgba(0, 0, 0, 0.50);
+        }
+    }
 }
 
 .habit{

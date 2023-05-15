@@ -3,7 +3,7 @@ import React, {useState} from 'react';
 import { TextField, Divider, Button, Box } from "@mui/material";
 import InputField from "../inputField/InputField";
 
-const LoginForm = ({loginHandle}) => { // перенести обращение к серверу наверх
+const LoginForm = ({loginHandle, handleChangeModal}) => { // перенести обращение к серверу наверх
 
     const [login, setLogin] = useState("");
     const [password, setPassword] = useState("");
@@ -72,9 +72,9 @@ const LoginForm = ({loginHandle}) => { // перенести обращение 
                         </Button>
                     </Box>
                     <div className="link-wrapper forgot-wrapper">
-                        <a href="#" className="login__forgot">Forgot password?</a>
+                        <div href="#" className="login__forgot">Forgot password?</div>
                     </div>
-                <span className="login__register">Don't have account? <a href="#">Create Account</a> </span>
+                <span className="login__register">Don't have account? <div onClick={handleChangeModal} style={{display: "inline", color:"red", cursor:"pointer", fontWeight: 700}}>Create Account</div> </span>
             </form>
         </div>
            

@@ -6,6 +6,7 @@ const HabitSchema = new mongoose.Schema(
         notificationTime: {time: mongoose.Schema.Types.Date},
         startDate: {type: mongoose.Schema.Types.Date, required: true},
         filter : {type: String},
+        isCompleted : {type: Boolean},
         user: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",

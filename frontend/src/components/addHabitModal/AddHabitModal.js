@@ -113,7 +113,8 @@ const AddHabitModal = ({isModalOpen, setIsModalOpen, filters, addHabit}) => {
                             addHabit({
                                 name: nameOfHabit,
                                 description,
-                                filter: inputValue
+                                filter: inputValue,
+                                isCompleted: false
                             });
                             setIsModalOpen(false)
                         }} sx={{

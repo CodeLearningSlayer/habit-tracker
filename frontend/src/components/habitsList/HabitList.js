@@ -3,8 +3,7 @@ import "./habitList.scss";
 import { Box, Stack, Chip, Button, Typography } from "@mui/material";
 import HabitCheckBox from "../habitCheckBox/HabitCheckBox";
 
-const HabitList = ({ handleFilterClick, onButtonClick, habits, handleDelete, numOfHabits, handleHabitClick, filters, selectedFilter }) => {
-  console.log(filters);
+const HabitList = ({ handleFilterClick, onButtonClick, habits, handleDelete, numOfHabits, handleHabitClick, filters, selectedFilter, handleEdit, setHabitCompleted }) => {
   return (
     <>
       <Box>
@@ -45,7 +44,6 @@ const HabitList = ({ handleFilterClick, onButtonClick, habits, handleDelete, num
             {filters.map((filter, index) => {
               let mr;
               let variant;
-              console.log(filter)
               index !== filters.length - 1 ? mr = 15 : mr = 30;
               selectedFilter === filter ? variant = "outlined" : variant = "filled";
               return(
@@ -94,9 +92,12 @@ const HabitList = ({ handleFilterClick, onButtonClick, habits, handleDelete, num
         <Stack>
           {habits.length && habits.map((habit) => 
           <HabitCheckBox key={habit._id} 
-          handleClick={handleHabitClick} 
+          handleClick={handleHabitClick}
+          setHabitCompleted={setHabitCompleted} 
           text={habit.name}
+          checkedDef={habit.isCompleted}
           id={habit._id}
+          handleEdit={handleEdit}
           handleDelete={handleDelete}/>)}
           
         </Stack>

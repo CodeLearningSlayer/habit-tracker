@@ -1,7 +1,7 @@
 import React from "react";
 import { Divider, Button, Box, TextField } from "@mui/material";
 import { useForm, Controller, useFormState } from "react-hook-form";
-const RegisterForm = ({ registerUser }) => {
+const RegisterForm = ({ registerUser, handleChangeModal }) => {
   const { control, handleSubmit, watch } = useForm();
   const styles = {
     "& .MuiOutlinedInput-root": {
@@ -176,12 +176,12 @@ const RegisterForm = ({ registerUser }) => {
             </Button>
           </Box>
           <div className="link-wrapper forgot-wrapper">
-            <a href="#" className="login__forgot">
+            <div className="login__forgot">
               Forgot password?
-            </a>
+            </div>
           </div>
           <span className="login__register">
-            Already have an account? <a href="#">Login</a>{" "}
+            Already have an account? <div onClick={handleChangeModal} style={{display:"inline", color: "red", cursor:"pointer", fontWeight: 700}}>Login</div>{" "}
           </span>
         </form>
       </div>

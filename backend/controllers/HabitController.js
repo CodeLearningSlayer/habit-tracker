@@ -3,13 +3,14 @@ import Habit from "../models/Habit.js"
 
 export const addHabit = async (req, res) => {
     try {
-        const {name, description, filter} = req.body;
+        const {name, description, filter, isCompleted} = req.body;
 
         const newHabit = new Habit({
             name,
             user: req.params.id,
             description,
             filter,
+            isCompleted,
             startDate: Date.now()
         })
         await newHabit.save() 
@@ -24,29 +25,6 @@ export const addHabit = async (req, res) => {
 }
 
 export const deleteHabit = async (req, res) => {
-    // try{
-    //     await User.findOneAndUpdate(
-    //         {_id: req.params.id, "habits.habit": req.params.habitId},
-    //         { $pull: { habits: { habit: req.params.habitId} } }
-    //     ).then((doc) => {
-    //         console.log(doc);
-    //         if (!doc) {
-    //             return res.status(404).json({
-    //                 message: "Habit not found"
-    //             });
-    //         }
-
-    //         res.json({
-    //             message: "Habit have been deleted"
-    //         })
-    //     })
-    // }
-    // catch(e){
-    //     console.log(e);
-    //     res.status(500).json({
-    //         message: "An error ocurred while deleting habit"
-    //     })
-    // }
     try {
         const user = await User.findById(req.params.id);
       
@@ -79,6 +57,21 @@ export const deleteHabit = async (req, res) => {
           message: "Internal Server Error",
         });
       }
+}
+
+export const setHabitCompleted = async(req, res) => {
+    console.log(req.body);
+    try{
+        const habit = await Habit.findOne({_id: req.params.habitId, user: req.params.id});
+        habit.set({isCompleted: req.body.status});
+        await habit.save();
+        console.log(habit);
+    }
+    catch(err) {
+            res.status(500).json({message: "error while updating"});
+            console.log(err);
+    }
+    res.json({message: "updated successfully"});
 }
 
 export const getAllHabits = async(req, res) => {
