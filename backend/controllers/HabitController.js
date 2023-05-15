@@ -74,6 +74,20 @@ export const setHabitCompleted = async(req, res) => {
     res.json({message: "updated successfully"});
 }
 
+export const editHabit = async(req, res) => {
+  try {
+    const habit = await Habit.findOne({_id: req.params.habitId, user: req.params.id});
+    const {name, description, filter} = req.body;
+    habit.set({name, description, filter});
+    await habit.save();
+  }
+  catch(err) {
+    res.status(500).json({message: "error while editiong"});
+    console.log(err);
+}
+res.json({message: "edited successfully"});
+}
+
 export const getAllHabits = async(req, res) => {
     try {
         console.log("req.params = ", req.params);

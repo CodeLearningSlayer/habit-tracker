@@ -186,6 +186,7 @@ function MainPage() {
       .then((data) => data.json())
       .then((habitsInfo) => {
         setHabits(habitsInfo.habits);
+        console.log(habitsInfo.habits);
       })
       .catch((e) => console.log("Ошибка при получении списка привычек"));
   };
@@ -258,11 +259,7 @@ function MainPage() {
       setSelectedFilter(filter)
   }
   return (
-      <div className="App">
-        {!isAuth && mode === "register" && <RegisterForm registerUser={registerUser}/>}
-        {!isAuth && mode === "login" && <LoginForm loginHandle={login}/>}
         <main className="right-side">
-          <Outlet/>
           <Container maxWidth="lg">
             <div className="right-side__inner">
               <Greetings name={user?.username} date={date} day={day}/>
@@ -288,7 +285,6 @@ function MainPage() {
             <AddHabitModal isModalOpen={isModalOpen} addHabit={addHabit} filters={filters} setIsModalOpen={setIsModalOpen}/>
           </Container>
         </main>
-      </div>
   );
 }
 

@@ -9,10 +9,6 @@ const ChallengeSchema = new mongoose.Schema(
             type: String,
             required: true
         },
-        habitId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Habit"
-        },
         startDate: {
             type: Date,
             required: true

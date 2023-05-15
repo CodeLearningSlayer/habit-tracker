@@ -38,7 +38,8 @@ const Challenges = () => {
                         <div className='grid__overlay'>
                             <Button sx={buttonStyles} onClick={openBar}>Accept challenge</Button>    
                         </div> 
-                        <img src="https://mir-s3-cdn-cf.behance.net/projects/max_808/af645230022915.Y3JvcCw5MjEsNzIwLDE1NCww.png" style={{height: 170, maxWidth: 200, margin: "15px auto"}}></img>
+                        <img src="https://mir-s3-cdn-cf.behance.net/projects/max_808/af645230022915.Y3JvcCw5MjEsNzIwLDE1NCww.png" style={{height: 170, 
+                        maxWidth: 200, margin: "15px auto"}}></img>
                         <Typography variant='body1' sx={{textAlign: "center", mt:"20px", color: "#fefefe", fontFamily: "Noto Sans", fontSize: 20}}>Make friend every day</Typography>
                     </Box>
                 </Grid>
@@ -48,7 +49,8 @@ const Challenges = () => {
                         <div className='grid__overlay'>
                             <Button sx={buttonStyles} onClick={openBar}>Accept challenge</Button>    
                         </div> 
-                        <img src="https://www.pinclipart.com/picdir/big/559-5592646_article-image-32-push-up-silhouette-png-clipart.png" style={{height: 170, maxWidth: 250, margin: "15px auto"}}></img>
+                        <img src="https://www.pinclipart.com/picdir/big/559-5592646_article-image-32-push-up-silhouette-png-clipart.png" style={{height: 170, 
+                        maxWidth: 250, margin: "15px auto"}}></img>
                         <Typography variant='body1' sx={{textAlign: "center", mt:"20px", color: "#fefefe", fontFamily: "Noto Sans", fontSize: 20}}>100 push ups for a day</Typography>
                     </Box>
                 </Grid>
@@ -58,7 +60,8 @@ const Challenges = () => {
                         <div className='grid__overlay'>
                             <Button sx={buttonStyles} onClick={openBar}>Accept challenge</Button>    
                         </div> 
-                        <img src="https://chowdy.com/wp-content/uploads/2018/12/Yoga-2-1.png" style={{height: 170, maxWidth: 200, margin: "15px auto"}}></img>
+                        <img src="https://chowdy.com/wp-content/uploads/2018/12/Yoga-2-1.png" style={{height: 170, 
+                        maxWidth: 200, margin: "15px auto"}}></img>
                         <Typography variant='body1' sx={{textAlign: "center", mt:"20px", color: "#fefefe", fontFamily: "Noto Sans", fontSize: 20}}>3 sessions of meditation a day</Typography>
                     </Box>
                 </Grid>

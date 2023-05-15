@@ -1,18 +1,11 @@
-import UserList from "./components/userList/UserList";
-import { useEffect, useState, useCallback, useMemo } from "react";
+import { useEffect, useState } from "react";
 import "./styles/style.scss";
 
-import AddHabitModal from "./components/addHabitModal/AddHabitModal.js";
-import HabitList from "./components/habitsList/HabitList";
 import LoginForm from "./components/loginForm/LoginForm.js";
 import RegisterForm from "./components/registerForm/RegisterForm";
 import { Container } from "@mui/material";
 import "react-circular-progressbar/dist/styles.css";
 import SideBar from "./components/sideBar/SideBar";
-import Greetings from "./components/greetings/Greetings";
-import PickerLegend from "./components/pickerLegend/PickerLegend";
-import InfoBox from "./components/infoBox/InfoBox";
-import ErrorBoundary from "./components/errorBoundary/ErrorBoundary";
 import { Outlet } from "react-router-dom";
 
 function App() {

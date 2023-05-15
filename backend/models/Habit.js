@@ -3,7 +3,7 @@ const HabitSchema = new mongoose.Schema(
     {
         name: {type: String, required: true},
         description: {type: String, required: false},
-        notificationTime: {time: mongoose.Schema.Types.Date},
+        notificationTime: {type: mongoose.Schema.Types.Date},
         startDate: {type: mongoose.Schema.Types.Date, required: true},
         filter : {type: String},
         isCompleted : {type: Boolean},

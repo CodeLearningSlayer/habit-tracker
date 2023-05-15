@@ -45,13 +45,13 @@ const HabitCheckBox = ({ text, handleClick, handleDelete, setHabitCompleted, che
         >
           {text}
         </Typography>
-        {/* <IconButton sx={{,}}>
+        <IconButton sx={{ml: "auto",}}>
           <EditIcon sx={{color:"#AFAFAF"}}/>
-        </IconButton> */}
+        </IconButton>
         <IconButton onClick={(e) => {
           handleDelete(id);
           e.stopPropagation();
-        }} sx={{ml: "auto", mr: "15px"}}>
+        }} sx={{ mr: "15px"}}>
           <DeleteIcon sx={{ color:"#AFAFAF"}}/>
         </IconButton>
       </Stack>

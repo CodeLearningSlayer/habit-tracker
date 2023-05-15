@@ -7,33 +7,14 @@ const HabitList = ({ handleFilterClick, onButtonClick, habits, handleDelete, num
   return (
     <>
       <Box>
-        <Stack
-          direction="row"
-          justifyContent={"space-between"}
-          alignItems={"center"}
+        <Stack direction="row" justifyContent={"space-between"} alignItems={"center"}
         >
-          <Typography
-            variant="h5"
-            sx={{
-              fontWeight: 700,
-              color: "#fff",
-              fontFamily: "Rubik, sans-serif",
-              mb: 2,
-              fontSize: "25px",
-            }}
-          >
+          <Typography variant="h5" sx={{ fontWeight: 700, color: "#fff", fontFamily: "Rubik, sans-serif", mb: 2, fontSize: "25px"}}>
             Habits - {numOfHabits}
           </Typography>
           <Box sx={{mb: "15px"}}>
           <Chip
-                sx={{
-                  borderRadius: "10px",
-                  mr: `15px`,
-                  color: "#fff",
-                  textTransform: "uppercase",
-                  fontSize: "20px",
-                  borderColor: "#F84343",
-                }}
+                sx={{ borderRadius: "10px", mr: `15px`, color: "#fff", textTransform: "uppercase", fontSize: "20px", borderColor: "#F84343"}}
                 onClick={() => {
                   handleFilterClick('all');
                 }
@@ -48,13 +29,7 @@ const HabitList = ({ handleFilterClick, onButtonClick, habits, handleDelete, num
               selectedFilter === filter ? variant = "outlined" : variant = "filled";
               return(
                 <Chip key={index}
-                sx={{
-                  borderRadius: "10px",
-                  mr: `${mr}px`,
-                  color: "#fff",
-                  textTransform: "uppercase",
-                  fontSize: "20px",
-                  borderColor: "#F84343",
+                sx={{ borderRadius: "10px", mr: `${mr}px`, color: "#fff", textTransform: "uppercase", fontSize: "20px", borderColor: "#F84343",
                 }}
                 onClick={() => {
                   console.log(filter);
@@ -70,15 +45,7 @@ const HabitList = ({ handleFilterClick, onButtonClick, habits, handleDelete, num
             <Button
               onClick={() => onButtonClick(true)}
               variant={"outlined"}
-              sx={{
-                fontSize: 30,
-                borderRadius: "50%",
-                backgroundColor: "#FF1818",
-                color: "#fff",
-                border: "2px solid #FFF",
-                width: "50px",
-                height: "50px",
-                minWidth: "unset",
+              sx={{ fontSize: 30, borderRadius: "50%", backgroundColor: "#FF1818", color: "#fff", border: "2px solid #FFF", width: "50px", height: "50px", minWidth: "unset",
                 "&:hover": {
                   border: "2px solid #FFF",
                   backgroundColor: "#FF181877",
