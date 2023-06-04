@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useMemo } from "react";
+import { useEffect, useState, useCallback, useMemo, useRef } from "react";
 
 import AddHabitModal from "../components/addHabitModal/AddHabitModal.js";
 import HabitList from "../components/habitsList/HabitList";
@@ -26,6 +26,8 @@ function MainPage() {
   const [filters, setFilters] = useState([]);
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [visibleHabits, setVisibleHabits] = useState([]);
+  const [editingHabit, setEditingHabit] = useState({});
+  const modalMode = useRef("creating");
 
   // вынести в utils
   const dateOptions = {
@@ -87,6 +89,7 @@ function MainPage() {
     if (res.status === 200) {
       setHabits(habits.filter((item) => item._id !== habitId));
     } console.log(await res.json())
+    getHabits();
   }, [user, habits]);
 
   useEffect(() => {
@@ -153,13 +156,12 @@ function MainPage() {
 
   
   const getAllFilters = () => {
-    console.log("Обновляю фильтры")
+    console.log("Обновляю фильтры");
     habits.forEach((habit) => {
       if (filters.indexOf(habit.filter) === -1)
         setFilters([...filters, habit.filter])
     })
   }
-
 
   const addHabit = async (habit) => {
     const res = await fetch(`http://localhost:3010/api/habits/${user._id}/habits/add`, {
@@ -170,7 +172,6 @@ function MainPage() {
       body: JSON.stringify(habit)
     });
     const result = await res.json();
-    setHabits([...habits, habit])
     getHabits();
   }
 
@@ -191,45 +192,6 @@ function MainPage() {
       .catch((e) => console.log("Ошибка при получении списка привычек"));
   };
 
-
-  const registerUser = async (data) => {
-    const res = await fetch("http://localhost:3010/api/auth/register", {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json;charset=utf-8",
-      },
-      body: JSON.stringify(data),
-    });
-    let result = await res.json();
-    console.log(result);
-  };
-
-  const login = async (data) => {
-      const userObj = {
-          username: data.login,
-          password: data.password
-      };
-      const res = await fetch("http://localhost:3010/api/auth/login", {
-          method: "POST",
-          headers: {
-              'Content-type': 'application/json;charset=utf-8'
-          },
-          body: JSON.stringify(userObj)
-      })
-      let result = await res.json();
-      if (result.token){
-        setIsAuth(true);
-        localStorage.setItem('token', result.token);
-        setUser(result.user);
-      }
-      console.log(result);
-  }
-
-  const logout = () => {
-    setIsAuth(false);
-    localStorage.removeItem('token');
-  }
-
   const countCompleted = (num) => {
     setNumOfCompletedHabits(numOfCompletedHabits + num);
   }
@@ -246,8 +208,23 @@ function MainPage() {
     console.log(data);
   }
 
-  const editHabit = async (habit) => {
-    setIsModalOpen(true)
+  const editHabit = (habit) => {
+    setEditingHabit(habit);
+    modalMode.current = "edit";
+    setIsModalOpen(true);
+  }
+
+  const editHabitOnServer = async ({name, description, filter, habitId}) => {
+    const res = await fetch(`http://localhost:3010/api/habits/${user._id}/habits/edit/${habitId}`, {
+      method: "POST",
+      headers: new Headers(
+        {'content-type': 'application/json',
+        'authorization': localStorage.getItem('token')}),
+      body: JSON.stringify({name, description, filter})
+    })
+    const data = await res.json();
+    console.log(data);
+    getHabits();
   }
 
   const filterHabits = (filter) => {
@@ -271,6 +248,7 @@ function MainPage() {
               <ErrorBoundary>
                 <HabitList selectedFilter={selectedFilter} 
                 handleFilterClick={filterHabits} 
+                mode={modalMode}
                 onButtonClick={setIsModalOpen} 
                 filters={filters} 
                 habits={visibleHabits} 
@@ -282,7 +260,13 @@ function MainPage() {
               </ErrorBoundary>
 
             </div>
-            <AddHabitModal isModalOpen={isModalOpen} addHabit={addHabit} filters={filters} setIsModalOpen={setIsModalOpen}/>
+            <AddHabitModal mode={modalMode} 
+              habit={editingHabit} 
+              isModalOpen={isModalOpen} 
+              addHabit={addHabit} 
+              filters={filters} 
+              setIsModalOpen={setIsModalOpen}
+              editHabit={editHabitOnServer}/>
           </Container>
         </main>
   );

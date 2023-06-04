@@ -3,7 +3,7 @@ import "./habitList.scss";
 import { Box, Stack, Chip, Button, Typography } from "@mui/material";
 import HabitCheckBox from "../habitCheckBox/HabitCheckBox";
 
-const HabitList = ({ handleFilterClick, onButtonClick, habits, handleDelete, numOfHabits, handleHabitClick, filters, selectedFilter, handleEdit, setHabitCompleted }) => {
+const HabitList = ({ mode, handleFilterClick, onButtonClick, habits, handleDelete, numOfHabits, handleHabitClick, filters, selectedFilter, handleEdit, setHabitCompleted }) => {
   return (
     <>
       <Box>
@@ -32,7 +32,6 @@ const HabitList = ({ handleFilterClick, onButtonClick, habits, handleDelete, num
                 sx={{ borderRadius: "10px", mr: `${mr}px`, color: "#fff", textTransform: "uppercase", fontSize: "20px", borderColor: "#F84343",
                 }}
                 onClick={() => {
-                  console.log(filter);
                   handleFilterClick(filter);
                 }
                }
@@ -43,7 +42,10 @@ const HabitList = ({ handleFilterClick, onButtonClick, habits, handleDelete, num
             })}
             
             <Button
-              onClick={() => onButtonClick(true)}
+              onClick={() => {
+                mode.current = "creating";
+                onButtonClick(true);
+              }}
               variant={"outlined"}
               sx={{ fontSize: 30, borderRadius: "50%", backgroundColor: "#FF1818", color: "#fff", border: "2px solid #FFF", width: "50px", height: "50px", minWidth: "unset",
                 "&:hover": {
@@ -59,11 +61,9 @@ const HabitList = ({ handleFilterClick, onButtonClick, habits, handleDelete, num
         <Stack>
           {habits.length && habits.map((habit) => 
           <HabitCheckBox key={habit._id} 
+          habit={habit}
           handleClick={handleHabitClick}
           setHabitCompleted={setHabitCompleted} 
-          text={habit.name}
-          checkedDef={habit.isCompleted}
-          id={habit._id}
           handleEdit={handleEdit}
           handleDelete={handleDelete}/>)}
           

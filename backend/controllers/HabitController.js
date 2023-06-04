@@ -82,7 +82,7 @@ export const editHabit = async(req, res) => {
     await habit.save();
   }
   catch(err) {
-    res.status(500).json({message: "error while editiong"});
+    res.status(500).json({message: "error while editing"});
     console.log(err);
 }
 res.json({message: "edited successfully"});

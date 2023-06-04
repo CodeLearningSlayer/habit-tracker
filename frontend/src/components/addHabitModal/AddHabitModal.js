@@ -1,6 +1,5 @@
-import {Paper, Button, Modal, Typography, Box, TextField, Fade, Backdrop, Select, MenuItem, InputLabel, Autocomplete } from '@mui/material';
-import InputField from '../inputField/InputField';
-import { useState, useSyncExternalStore } from 'react';
+import { Button, Modal, Typography, Box, TextField, Fade, Backdrop, Autocomplete } from '@mui/material';
+import { useEffect, useState } from 'react';
 
 const style = {
     position: 'absolute',
@@ -35,12 +34,26 @@ const inputStyle = {
       },
 }
 
-const AddHabitModal = ({isModalOpen, setIsModalOpen, filters, addHabit}) => {
+const AddHabitModal = ({isModalOpen, setIsModalOpen, filters, addHabit, habit, mode, editHabit}) => {
 
     const [nameOfHabit, setNameOfHabit] = useState("");
     const [description, setDescription] = useState("");
     const [selectedFilter, setSelectedFilter] = useState(filters[0]);
     const [inputValue, setInputValue] = useState('');
+
+
+    useEffect(() => {
+        console.log(mode.current);
+        mode.current === "edit" ? (() => {
+            setNameOfHabit(habit.name); 
+            setDescription(habit.description);
+            setSelectedFilter(habit.filter);
+        })() : (() => {
+            setNameOfHabit(""); 
+            setDescription("");
+            setSelectedFilter("");
+        })()
+    }, [habit, mode.current]);
 
     const handleNameChange = (e) => {
         setNameOfHabit(e.target.value)
@@ -73,7 +86,7 @@ const AddHabitModal = ({isModalOpen, setIsModalOpen, filters, addHabit}) => {
                         <Typography variant="h5" sx={{textAlign:"center", 
                             color: "#fefefe",
                             fontFamily:"Rubik, sans-serif",
-                            mb: "15px"}}>Create a new habbit</Typography>
+                            mb: "15px"}}>{mode.current === "creating" ? "Create a new habbit" : "Edit habbit"}</Typography>
                         <TextField onChange={handleNameChange} value={nameOfHabit} sx={inputStyle} label={"Название привычки"}/>
                         <Autocomplete
                             disablePortal
@@ -110,12 +123,24 @@ const AddHabitModal = ({isModalOpen, setIsModalOpen, filters, addHabit}) => {
                             />
                         <TextField multiline value={description} onChange={handleDecriptionChange} rows={2} sx={inputStyle} label={"Описание привычки"}/>
                         <Button onClick={() => {
-                            addHabit({
-                                name: nameOfHabit,
-                                description,
-                                filter: inputValue,
-                                isCompleted: false
-                            });
+                            mode.current === "creating" ?
+                            (() => {
+                                addHabit({
+                                    name: nameOfHabit,
+                                    description,
+                                    filter: inputValue,
+                                    isCompleted: false
+                                });
+                            })() : 
+                            
+                            (() => {
+                                editHabit({
+                                    name: nameOfHabit,
+                                    description,
+                                    filter: inputValue,
+                                    habitId: habit._id
+                                })
+                            })()
                             setIsModalOpen(false)
                         }} sx={{
                             m: "0 auto",
@@ -127,7 +152,9 @@ const AddHabitModal = ({isModalOpen, setIsModalOpen, filters, addHabit}) => {
                         width:"100%",
                         height: "45px",
                         fontSize: "20px",
-                        fontFamily: "Noto Sans, sans-serif"}}>Добавить привычку</Button>
+                        fontFamily: "Noto Sans, sans-serif"}}>
+                            {mode.current === "creating" ? "Добавить привычку" : "Изменить привычку"}
+                            </Button>
                     </Box>
                 
                 </Fade>

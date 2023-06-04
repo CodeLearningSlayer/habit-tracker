@@ -2,6 +2,7 @@ import { Typography } from '@mui/material';
 import React from 'react';
 import Calendar from '../calendar/Calendar';
 import ProgressBoard from '../progressBoard/ProgressBoard';
+import CustomCalendar from '../customCalendar/CustomCalendar';
 
 const InfoBox = ({percentage, numOfCompletedHabits, totalNumOfHabits}) => {
     return (
