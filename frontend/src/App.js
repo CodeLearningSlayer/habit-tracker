@@ -7,6 +7,7 @@ import { Container } from "@mui/material";
 import "react-circular-progressbar/dist/styles.css";
 import SideBar from "./components/sideBar/SideBar";
 import { Outlet } from "react-router-dom";
+import { getTimeOfDay } from "./utils/timeUtil";
 
 function App() {
   const [isAuth, setIsAuth] = useState(false);
@@ -20,7 +21,7 @@ function App() {
   useEffect(() => {
     getUserIfAuth();
     setMode("login");
-    getTimeOfDay();
+    setTimeOfTheDay(getTimeOfDay())
     // getUsers();
   }, []);
 
@@ -28,29 +29,6 @@ function App() {
   const handleTabClick = (num) => {
     setActiveNum(num);
   }
-
-
-  const getTimeOfDay = () => {
-    let MyDate = new Date(),
-    MyHours = MyDate.getHours();
-    switch (true){
-      case (MyHours >= 5) && (MyHours < 11):
-        setTimeOfTheDay('Good morning, ');
-        break;
-      case (MyHours >= 11) && (MyHours < 16):
-        setTimeOfTheDay('Good afternoon, ');
-        break;
-      case (MyHours >= 16) && (MyHours <= 23):
-        setTimeOfTheDay('Good evening, ');
-        break;
-      case (MyHours >= 0) && (MyHours < 5):
-        setTimeOfTheDay('Good night, ');
-        break;
-      default:
-        return true
-    }
-  }
-
 
 
   useEffect(() => { // useCallback

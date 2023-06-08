@@ -1,9 +1,9 @@
 import React from "react";
 import "./habitList.scss";
-import { Box, Stack, Chip, Button, Typography } from "@mui/material";
+import { Box, Stack, Chip, Button, Typography, Divider, LinearProgress } from "@mui/material";
 import HabitCheckBox from "../habitCheckBox/HabitCheckBox";
 
-const HabitList = ({ mode, handleFilterClick, onButtonClick, habits, handleDelete, numOfHabits, handleHabitClick, filters, selectedFilter, handleEdit, setHabitCompleted }) => {
+const HabitList = ({ isLoading, mode, handleFilterClick, onButtonClick, habits, handleDelete, numOfHabits, handleHabitClick, filters, selectedFilter, handleEdit, setHabitCompleted }) => {
   return (
     <>
       <Box>
@@ -58,14 +58,28 @@ const HabitList = ({ mode, handleFilterClick, onButtonClick, habits, handleDelet
             </Button>
           </Box>
         </Stack>
+        
+        {isLoading ? <Divider sx={{borderWidth:"3px", 
+          borderRadius: "2px", 
+          borderColor: "#423B3B",
+          mb: "20px"}}/> : <LinearProgress color="primary" sx={{
+            height:"5px", 
+            borderRadius: "2px", 
+            mb: "20px",
+            ".MuiLinearProgress-bar": {backgroundColor: "red"},
+            backgroundColor: "#8b0000"
+            }} />}
+
+        
+        
+
         <Stack>
           {habits.length && habits.map((habit) => 
           <HabitCheckBox key={habit._id} 
-          habit={habit}
-          handleClick={handleHabitClick}
-          setHabitCompleted={setHabitCompleted} 
-          handleEdit={handleEdit}
-          handleDelete={handleDelete}/>)}
+            habit={habit}
+            setHabitCompleted={setHabitCompleted} 
+            handleEdit={handleEdit}
+            handleDelete={handleDelete}/>)}
           
         </Stack>
       </Box>

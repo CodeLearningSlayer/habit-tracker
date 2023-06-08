@@ -1,81 +1,34 @@
-import { useEffect, useState, useCallback, useMemo, useRef } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 
 import AddHabitModal from "../components/addHabitModal/AddHabitModal.js";
 import HabitList from "../components/habitsList/HabitList";
-import LoginForm from "../components/loginForm/LoginForm.js";
-import RegisterForm from "../components/registerForm/RegisterForm";
 import { Container } from "@mui/material";
 import "react-circular-progressbar/dist/styles.css";
-import SideBar from "../components/sideBar/SideBar";
 import Greetings from "../components/greetings/Greetings";
 import PickerLegend from "../components/pickerLegend/PickerLegend";
 import InfoBox from "../components/infoBox/InfoBox";
 import ErrorBoundary from "../components/errorBoundary/ErrorBoundary";
-import { Outlet } from "react-router-dom";
+import { getDateAndDay } from "../utils/timeUtil.js";
 
 function MainPage() {
   const [habits, setHabits] = useState([]);
   const [isAuth, setIsAuth] = useState(false);
-  const [mode, setMode] = useState();
   const [numOfCompletedHabits, setNumOfCompletedHabits] = useState(0);
   const [totalNumOfHabits, setTotalNumOfHabits] = useState(0);
   const [percentage, setPercentage] = useState(0);
   const [user, setUser] = useState(null);
-  const [timeOfTheDay, setTimeOfTheDay] = useState();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [filters, setFilters] = useState([]);
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [visibleHabits, setVisibleHabits] = useState([]);
   const [editingHabit, setEditingHabit] = useState({});
   const modalMode = useRef("creating");
-
-  // вынести в utils
-  const dateOptions = {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    timezone: "UTC",
-  };
-
-  const date = new Date(Date.now()).toLocaleString("ru", dateOptions);
-  const days = [
-    "Понедельник",
-    "Вторник",
-    "Среда",
-    "Четверг",
-    "Пятница",
-    "Суббота",
-    "Воскресенье",
-  ];
-  let day = new Date(Date.now()).getDay();
-  day = day > 0 ? days[day - 1] : days[6];
-
-  const getTimeOfDay = () => {
-    let MyDate = new Date(),
-    MyHours = MyDate.getHours();
-    switch (true){
-      case (MyHours >= 5) && (MyHours < 11):
-        setTimeOfTheDay('Good morning, ');
-        break;
-      case (MyHours >= 11) && (MyHours < 16):
-        setTimeOfTheDay('Good afternoon, ');
-        break;
-      case (MyHours >= 16) && (MyHours <= 23):
-        setTimeOfTheDay('Good evening, ');
-        break;
-      case (MyHours >= 0) && (MyHours < 5):
-        setTimeOfTheDay('Good night, ');
-        break;
-      default:
-        return true
-    }
-  }
+  const {date, day} = getDateAndDay();
+  
 
   useEffect(() => {
     getUserIfAuth();
-    setMode("login");
     // getUsers();
-    getTimeOfDay();
   }, []);
 
   const deleteHabit = useCallback(async function (habitId) {
@@ -89,41 +42,53 @@ function MainPage() {
     if (res.status === 200) {
       setHabits(habits.filter((item) => item._id !== habitId));
     } console.log(await res.json())
-    getHabits();
-  }, [user, habits]);
+  }, [habits, user?._id]);
 
   useEffect(() => {
     setFilters([]);
   }, [deleteHabit])
 
+  const isEqSet = (xs, ys) =>
+    xs.size === ys.size &&
+    [...xs].every((x) => ys.has(x));
+
+  const getHabits = useCallback(async () => {
+    fetch(`http://localhost:3010/api/habits/${user?._id}/allHabits`)
+      .then((data) => data.json())
+      .then((habitsInfo) => {
+        setHabits(habitsInfo.habits);
+      })
+      .catch((e) => console.log("Ошибка при получении списка привычек"));
+  }, [user?._id]);
+
   useEffect(() => {
-    if (user !== null)
-    getHabits();
+    if (user !== null) {
+      getHabits();
+    }
 
-  }, [user])
+  }, [user, getHabits])
 
-  const calculateCompleted = () => {
+  useEffect(() => {
     let completed = 0;
     habits.forEach((habit) => {
       if (habit.isCompleted){
         completed += 1
       }
     })
-    console.log(completed)
     setNumOfCompletedHabits(completed);
-  }
+  }, [habits]) //посчитать 1 раз?? 
 
-   useEffect(() => calculateCompleted(), [habits])
+
+  useEffect(() => {
+    getAllFilters(); //вынести 
+    console.log("Получаю все фильтры");
+  }, [habits])
 
   useEffect(() => {
     setTotalNumOfHabits(habits && habits.length);
-    getAllFilters();
     setVisibleHabits(habits);
     console.log('habits changed');
-  }, [habits, filters])
-
-  useEffect(() => {
-  }, [totalNumOfHabits])
+  }, [habits])
 
   useEffect(() => {
     if (numOfCompletedHabits !== 0)
@@ -141,7 +106,7 @@ function MainPage() {
           'authorization': localStorage.getItem('token')})
         });
         const data = await res.json();
-        setUser(data.user);
+        setUser(data.user); // мемоизировать, при ререндере идёт новый запрос
       }
       getMe();
     }
@@ -156,11 +121,13 @@ function MainPage() {
 
   
   const getAllFilters = () => {
-    console.log("Обновляю фильтры");
+    let currFilters = new Set();
     habits.forEach((habit) => {
-      if (filters.indexOf(habit.filter) === -1)
-        setFilters([...filters, habit.filter])
+      currFilters.add(habit.filter);
     })
+    if (!isEqSet(currFilters, new Set(filters)));
+      setSelectedFilter("all");
+    setFilters(Array.from(currFilters));
   }
 
   const addHabit = async (habit) => {
@@ -172,7 +139,9 @@ function MainPage() {
       body: JSON.stringify(habit)
     });
     const result = await res.json();
-    getHabits();
+    console.log(result);
+    if (res.status === 200)
+      setHabits([...habits, result.newHabit]);
   }
 
   const getUsers = async () => {
@@ -182,19 +151,9 @@ function MainPage() {
       .catch((e) => console.log("Ошибка при получении списка пользователей"));
   };
 
-  const getHabits = async () => {
-    fetch(`http://localhost:3010/api/habits/${user?._id}/allHabits`)
-      .then((data) => data.json())
-      .then((habitsInfo) => {
-        setHabits(habitsInfo.habits);
-        console.log(habitsInfo.habits);
-      })
-      .catch((e) => console.log("Ошибка при получении списка привычек"));
-  };
+  
 
-  const countCompleted = (num) => {
-    setNumOfCompletedHabits(numOfCompletedHabits + num);
-  }
+  
   // /habits/update/:habitId
   const setHabitCompleted = async (habitId, isCompleted) => {
     const res = await fetch(`http://localhost:3010/api/habits/${user._id}/habits/update/${habitId}`, {
@@ -205,6 +164,10 @@ function MainPage() {
       body: JSON.stringify({status: isCompleted})
     })
     const data = await res.json();
+    if (isCompleted) 
+      setNumOfCompletedHabits(numOfCompletedHabits + 1)
+    else
+      setNumOfCompletedHabits(numOfCompletedHabits - 1)
     console.log(data);
   }
 
@@ -214,17 +177,32 @@ function MainPage() {
     setIsModalOpen(true);
   }
 
-  const editHabitOnServer = async ({name, description, filter, habitId}) => {
-    const res = await fetch(`http://localhost:3010/api/habits/${user._id}/habits/edit/${habitId}`, {
+  const replaceHabit = (habit) => {
+    setHabits(habits.map(habitIn => {
+      if (habit.habitId === habitIn._id) {
+        habitIn.name = habit.name;
+        habitIn.filter = habit.filter;
+        habitIn.description = habit.description;
+      }
+      return habitIn;
+    }))
+  }
+
+  const editHabitOnServer = async (habit) => {
+    console.log(JSON.stringify(habit.name, habit.description, habit.filter));
+    const res = await fetch(`http://localhost:3010/api/habits/${user._id}/habits/edit/${habit.habitId}`, {
       method: "POST",
       headers: new Headers(
         {'content-type': 'application/json',
         'authorization': localStorage.getItem('token')}),
-      body: JSON.stringify({name, description, filter})
+      body: JSON.stringify(habit)
     })
     const data = await res.json();
     console.log(data);
-    getHabits();
+    if (res.status === 200) {
+      replaceHabit(habit);
+    }
+    console.log(data);
   }
 
   const filterHabits = (filter) => {
@@ -251,9 +229,9 @@ function MainPage() {
                 mode={modalMode}
                 onButtonClick={setIsModalOpen} 
                 filters={filters} 
+                // isLoading={isLoading} //получать его из хука запроса
                 habits={visibleHabits} 
                 numOfHabits={totalNumOfHabits} 
-                handleHabitClick={countCompleted}
                 handleDelete={deleteHabit}
                 handleEdit={editHabit}
                 setHabitCompleted={setHabitCompleted}></HabitList>

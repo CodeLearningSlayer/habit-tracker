@@ -12,7 +12,7 @@ const HabitCheckBox = ({ modalMode, habit, handleClick, handleDelete, setHabitCo
         () => {
             setChecked(!checked);
             setHabitCompleted(habit._id, !checked);
-            checked ? handleClick(-1) : handleClick(1);
+            // checked ? handleClick(-1) : handleClick(1);
         }}
       width={"100%"}
       sx={{

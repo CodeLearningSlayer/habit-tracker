@@ -4,7 +4,7 @@ import Habit from "../models/Habit.js"
 export const addHabit = async (req, res) => {
     try {
         const {name, description, filter, isCompleted} = req.body;
-
+        console.log(typeof(id));
         const newHabit = new Habit({
             name,
             user: req.params.id,
@@ -17,10 +17,10 @@ export const addHabit = async (req, res) => {
         await User.findByIdAndUpdate(req.params.id, {
             $push: {habits: newHabit}
         });
-        res.json(newHabit)
+        res.status(200).json({newHabit});
     } catch(e) {
         console.log(e);
-        res.json({message: "Ошибка при попытке создания новой привычки"});
+        res.status(500).json({message: "Ошибка при попытке создания новой привычки"});
     }
 }
 
