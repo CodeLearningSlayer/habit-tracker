@@ -82,13 +82,13 @@ function MainPage() {
   useEffect(() => {
     getAllFilters(); //вынести 
     console.log("Получаю все фильтры");
-  }, [habits])
+  }, [habits.length])
 
   useEffect(() => {
     setTotalNumOfHabits(habits && habits.length);
     setVisibleHabits(habits);
     console.log('habits changed');
-  }, [habits])
+  }, [habits.length])
 
   useEffect(() => {
     if (numOfCompletedHabits !== 0)
@@ -151,12 +151,9 @@ function MainPage() {
       .catch((e) => console.log("Ошибка при получении списка пользователей"));
   };
 
-  
-
-  
   // /habits/update/:habitId
-  const setHabitCompleted = async (habitId, isCompleted) => {
-    const res = await fetch(`http://localhost:3010/api/habits/${user._id}/habits/update/${habitId}`, {
+  const setHabitCompleted = async (habit, isCompleted) => {
+    const res = await fetch(`http://localhost:3010/api/habits/${user._id}/habits/update/${habit._id}`, {
       method: "POST",
       headers: new Headers(
         {'content-type': 'application/json',
@@ -164,10 +161,19 @@ function MainPage() {
       body: JSON.stringify({status: isCompleted})
     })
     const data = await res.json();
-    if (isCompleted) 
-      setNumOfCompletedHabits(numOfCompletedHabits + 1)
-    else
-      setNumOfCompletedHabits(numOfCompletedHabits - 1)
+    if (res.status === 200) {
+      if (isCompleted) 
+        setNumOfCompletedHabits(numOfCompletedHabits + 1);
+      else
+        setNumOfCompletedHabits(numOfCompletedHabits - 1);
+      setHabits(habits.map((habitIn) => {
+        if (habit._id === habitIn._id){
+          habitIn.isCompleted = isCompleted;
+        }
+        return habitIn;
+      }))
+    }
+    
     console.log(data);
   }
 
@@ -189,7 +195,6 @@ function MainPage() {
   }
 
   const editHabitOnServer = async (habit) => {
-    console.log(JSON.stringify(habit.name, habit.description, habit.filter));
     const res = await fetch(`http://localhost:3010/api/habits/${user._id}/habits/edit/${habit.habitId}`, {
       method: "POST",
       headers: new Headers(
@@ -198,11 +203,9 @@ function MainPage() {
       body: JSON.stringify(habit)
     })
     const data = await res.json();
-    console.log(data);
     if (res.status === 200) {
       replaceHabit(habit);
     }
-    console.log(data);
   }
 
   const filterHabits = (filter) => {

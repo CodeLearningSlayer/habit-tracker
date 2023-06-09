@@ -5,14 +5,14 @@ import EditIcon from '@mui/icons-material/Edit';
 
 const HabitCheckBox = ({ modalMode, habit, handleClick, handleDelete, setHabitCompleted, handleEdit}) => {
   const [checked, setChecked] = useState(habit.isCompleted);
+  console.log("рисую новый элемент");
   return (
     <Box
       className={checked ? "habit--completed" : "habit--uncompleted"}
       onClick={
         () => {
             setChecked(!checked);
-            setHabitCompleted(habit._id, !checked);
-            // checked ? handleClick(-1) : handleClick(1);
+            setHabitCompleted(habit, !checked);
         }}
       width={"100%"}
       sx={{
