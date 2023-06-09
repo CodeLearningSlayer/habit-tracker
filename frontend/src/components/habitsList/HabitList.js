@@ -1,9 +1,48 @@
-import React from "react";
+import React, { useState } from "react";
 import "./habitList.scss";
 import { Box, Stack, Chip, Button, Typography, Divider, LinearProgress } from "@mui/material";
 import HabitCheckBox from "../habitCheckBox/HabitCheckBox";
+import useFetch from "../../hooks/useFetch";
 
-const HabitList = ({ isLoading, mode, handleFilterClick, onButtonClick, habits, handleDelete, numOfHabits, handleHabitClick, filters, selectedFilter, handleEdit, setHabitCompleted }) => {
+const setContent = (process, newItemLoading) => {
+  switch (process){
+      case 'waiting':
+          return <LinearProgress color="primary" sx={{
+            height:"5px", 
+            borderRadius: "2px", 
+            mb: "20px",
+            ".MuiLinearProgress-bar": {backgroundColor: "red"},
+            backgroundColor: "#8b0000"
+            }} />
+      case 'loading':
+          return newItemLoading ? <Divider sx={{borderWidth:"3px", 
+          borderRadius: "2px", 
+          borderColor: "#423B3B",
+          mb: "20px"}}/> :<LinearProgress color="primary" sx={{
+            height:"5px", 
+            borderRadius: "2px", 
+            mb: "20px",
+            ".MuiLinearProgress-bar": {backgroundColor: "red"},
+            backgroundColor: "#8b0000"
+            }} />;
+      case 'confirmed':
+          return <Divider sx={{borderWidth:"3px", 
+          borderRadius: "2px", 
+          borderColor: "#423B3B",
+          mb: "20px"}}/>
+      case 'error':
+          return new Error();
+      default:
+          throw new Error('unexpected proccess state');
+  }
+} 
+
+
+const HabitList = ({ mode, handleFilterClick, onButtonClick, habits, handleDelete, numOfHabits, handleHabitClick, filters, selectedFilter, handleEdit, setHabitCompleted }) => {
+  const [habitsLoading, setHabitsLoading] = useState(false);
+  const {process} = useFetch();
+  console.log(filters);
+  console.log("рисую список");
   return (
     <>
       <Box>
@@ -22,7 +61,7 @@ const HabitList = ({ isLoading, mode, handleFilterClick, onButtonClick, habits, 
                 label="All"
                 variant={selectedFilter === 'all' ? "outlined" : "filled"}
               />
-            {filters.map((filter, index) => {
+            {filters && filters.map((filter, index) => {
               let mr;
               let variant;
               index !== filters.length - 1 ? mr = 15 : mr = 30;
@@ -59,22 +98,10 @@ const HabitList = ({ isLoading, mode, handleFilterClick, onButtonClick, habits, 
           </Box>
         </Stack>
         
-        {isLoading ? <Divider sx={{borderWidth:"3px", 
-          borderRadius: "2px", 
-          borderColor: "#423B3B",
-          mb: "20px"}}/> : <LinearProgress color="primary" sx={{
-            height:"5px", 
-            borderRadius: "2px", 
-            mb: "20px",
-            ".MuiLinearProgress-bar": {backgroundColor: "red"},
-            backgroundColor: "#8b0000"
-            }} />}
-
-        
-        
+        {setContent(process, habitsLoading)}
 
         <Stack>
-          {habits.length && habits.map((habit) => 
+          {habits && habits.length && habits.map((habit) => 
           <HabitCheckBox key={habit._id} 
             habit={habit}
             setHabitCompleted={setHabitCompleted} 
