@@ -8,6 +8,7 @@ import "react-circular-progressbar/dist/styles.css";
 import SideBar from "./components/sideBar/SideBar";
 import { Outlet } from "react-router-dom";
 import { getTimeOfDay } from "./utils/timeUtil";
+import useUserAPI from "./api/rest/user";
 
 function App() {
   const [isAuth, setIsAuth] = useState(false);
@@ -15,14 +16,13 @@ function App() {
   const [user, setUser] = useState(null);
   const [timeOfTheDay, setTimeOfTheDay] = useState();
   const [activeNum, setActiveNum] = useState(0);
-
+  const {getMe} = useUserAPI();
 
 
   useEffect(() => {
     getUserIfAuth();
     setMode("login");
     setTimeOfTheDay(getTimeOfDay())
-    // getUsers();
   }, []);
 
 
@@ -33,21 +33,12 @@ function App() {
 
   useEffect(() => { // useCallback
     if (isAuth) {
-      const getMe = async () => {
-        const res = await fetch("http://localhost:3010/api/auth/me", {
-        method: "GET",
-        headers: new Headers(
-          {'content-type': 'application/json',
-          'authorization': localStorage.getItem('token')})
-        });
-        const data = await res.json();
-        setUser(data.user);
+      getMe()
+        .then(data => setUser(data.user));
       }
-      getMe();
-    }
-  }, [isAuth])
+    }, [isAuth])
 
-  const getUserIfAuth = async () => {
+  const getUserIfAuth = () => {
     if (localStorage.getItem('token')) {
       setIsAuth(true)
     }
@@ -112,7 +103,7 @@ function App() {
         <SideBar name={user?.username} activeNum={activeNum}  clickHandle={handleTabClick} timeOfTheDay={timeOfTheDay} logout={logout}/>
         <main className="right-side">
           <Container maxWidth="lg">
-            <Outlet/>
+            <Outlet context={[user, isAuth]}/>
           </Container>
         </main>
       </div>

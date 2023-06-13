@@ -3,6 +3,7 @@ import "./habitList.scss";
 import { Box, Stack, Chip, Button, Typography, Divider, LinearProgress } from "@mui/material";
 import HabitCheckBox from "../habitCheckBox/HabitCheckBox";
 import useFetch from "../../hooks/useFetch";
+import { useWhyDidYouUpdate } from 'ahooks';
 
 const setContent = (process, newItemLoading) => {
   switch (process){
@@ -18,7 +19,7 @@ const setContent = (process, newItemLoading) => {
           return newItemLoading ? <Divider sx={{borderWidth:"3px", 
           borderRadius: "2px", 
           borderColor: "#423B3B",
-          mb: "20px"}}/> :<LinearProgress color="primary" sx={{
+          mb: "20px"}}/> : <LinearProgress color="primary" sx={{
             height:"5px", 
             borderRadius: "2px", 
             mb: "20px",
@@ -38,11 +39,9 @@ const setContent = (process, newItemLoading) => {
 } 
 
 
-const HabitList = ({ mode, handleFilterClick, onButtonClick, habits, handleDelete, numOfHabits, handleHabitClick, filters, selectedFilter, handleEdit, setHabitCompleted }) => {
-  const [habitsLoading, setHabitsLoading] = useState(false);
+const HabitList = ({ mode, habitsLoading, handleFilterClick, onButtonClick, habits, handleDelete, numOfHabits, handleHabitClick, filters, selectedFilter, handleEdit, setHabitCompleted }) => {
   const {process} = useFetch();
-  console.log(filters);
-  console.log("рисую список");
+  // useWhyDidYouUpdate('HabitList', { mode, habitsLoading, handleFilterClick, onButtonClick, habits, handleDelete, numOfHabits, handleHabitClick, filters, selectedFilter, handleEdit, setHabitCompleted });
   return (
     <>
       <Box>

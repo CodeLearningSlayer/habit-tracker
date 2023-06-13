@@ -1,4 +1,5 @@
 import useFetch from "../../hooks/useFetch";
+import { useCallback } from "react";
 
 const useHabitsAPI = (user) => {
     const {process, setProcess, fetchNow} = useFetch();
@@ -7,7 +8,7 @@ const useHabitsAPI = (user) => {
         {'content-type': 'application/json',
         'authorization': localStorage.getItem('token')})
     const baseUrl = `http://localhost:3010/api/habits/${user?._id}/habits`
-    const deleteHabit = async (habitId) => {
+    const deleteHabit = useCallback((habitId) => {
         //res - объект мб пустой вообще
         const data = fetchNow (
             `${baseUrl}/delete/${habitId}`, {
@@ -17,15 +18,16 @@ const useHabitsAPI = (user) => {
         if (process !== "error") {
             return data;
         }
-    }
+    }, [baseUrl, fetchNow, process]);
     // проверять status
-    const getHabits = () => {
+
+    const getHabits = useCallback(() => {
         const data = fetchNow(`http://localhost:3010/api/habits/${user?._id}/allHabits`);
         if (process !== "error")
             return data;
-    }
+    }, [baseUrl]);
 
-    const addHabit = (habit) => {
+    const addHabit = useCallback((habit) => {
         const data = fetchNow(`${baseUrl}/add`, {
             method: "POST",
             headers: headers,
@@ -34,9 +36,9 @@ const useHabitsAPI = (user) => {
         console.log(process);
         if (process !== "error")
             return data;
-    }
+    }, [baseUrl]);
 
-    const setHabitCompleted = (habitId, isCompleted) => {
+    const setHabitCompleted = useCallback((habitId, isCompleted) => {
         const data = fetchNow(`${baseUrl}/update/${habitId}`, {
             method: "POST",
             headers: headers,
@@ -44,9 +46,9 @@ const useHabitsAPI = (user) => {
         })
         if (process !== "error")
             return data;
-    }
+    }, [baseUrl]);
 
-    const editHabit = (habit) => {
+    const editHabit = useCallback((habit) => {
         const data = fetchNow(`${baseUrl}/edit/${habit.habitId}`, {
             method: "POST",
             headers: headers,
@@ -54,7 +56,7 @@ const useHabitsAPI = (user) => {
         });
         if (process !== "error")
             return data;
-    }
+    }, [baseUrl]);
 
     return {process, setProcess, deleteHabit, addHabit, editHabit, setHabitCompleted, getHabits}
 }

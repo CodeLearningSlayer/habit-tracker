@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import AddHabitModal from "../components/addHabitModal/AddHabitModal.js";
 import HabitList from "../components/habitsList/HabitList";
-import { Container, LinearProgress } from "@mui/material";
+import { Container } from "@mui/material";
 import "react-circular-progressbar/dist/styles.css";
 import Greetings from "../components/greetings/Greetings";
 import PickerLegend from "../components/pickerLegend/PickerLegend";
@@ -9,16 +9,14 @@ import InfoBox from "../components/infoBox/InfoBox";
 import ErrorBoundary from "../components/errorBoundary/ErrorBoundary";
 import { getDateAndDay } from "../utils/timeUtil.js";
 import useHabitsAPI from "../api/rest/habits.js";
-import useUserAPI from "../api/rest/user.js";
-
+import { useOutletContext } from "react-router-dom";
+import { useWhyDidYouUpdate } from "ahooks";
 
 function MainPage() {
   const [habits, setHabits] = useState([]);
-  const [isAuth, setIsAuth] = useState(false);
   const [numOfCompletedHabits, setNumOfCompletedHabits] = useState(0);
   const [totalNumOfHabits, setTotalNumOfHabits] = useState(0);
   const [percentage, setPercentage] = useState(0);
-  const [user, setUser] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [filters, setFilters] = useState([]);
   const [selectedFilter, setSelectedFilter] = useState("all");
@@ -26,34 +24,38 @@ function MainPage() {
   const [editingHabit, setEditingHabit] = useState({});
   const modalMode = useRef("creating");
   const {date, day} = getDateAndDay();
-  const {process, setProcess, deleteHabit, addHabit, editHabit, setHabitCompleted, getHabits} = useHabitsAPI(user); // нужен юзер
-  const {getMe} = useUserAPI();
-  useEffect(() => {
-    getUserIfAuth();
-    // getUsers();
-  }, []);
+  const [habitsLoading, setHabitsLoading] = useState(false)
+  const [user] = useOutletContext();
+  
+  const {setProcess, deleteHabit, addHabit, editHabit, setHabitCompleted, getHabits} = useHabitsAPI(user); // нужен юзер
+  
+  // console.log(habits);
+  // useWhyDidYouUpdate('MainPage', { habits, setHabitCompleted, deleteHabit });
 
   const removeHabit = useCallback(async function (habitId) {
+    setHabitsLoading(true);
     deleteHabit(habitId)
       .then(() => setHabits(habits.filter((item) => item._id !== habitId)))
+      .then(setHabitsLoading(false))
       .then(setProcess("confirmed"));
-  }, [habits, user?._id]);
+  }, [habits, deleteHabit, setProcess]);
 
   const isEqSet = (xs, ys) =>
     xs.size === ys.size &&
     [...xs].every((x) => ys.has(x));
 
   const receiveHabits = useCallback(async () => {
+    setHabitsLoading(true);
     getHabits()
       .then(data => setHabits(data.habits))
+      .then(setHabitsLoading(false))
       .then(setProcess("confirmed"));
-  }, [user?._id]);
+  }, [getHabits]);
 
   useEffect(() => {
     if (user !== null) {
       receiveHabits();
     }
-
   }, [user, receiveHabits])
 
   useEffect(() => {
@@ -67,48 +69,36 @@ function MainPage() {
   }, [habits]) //посчитать 1 раз?? 
 
 
-  useEffect(() => {
-    getAllFilters(); //вынести 
-    console.log("Получаю все фильтры");
-  }, [habits])
-
-  useEffect(() => {
-    setTotalNumOfHabits(habits && habits.length);
-    setVisibleHabits(habits);
-    console.log('habits changed');
-  }, [habits?.length])
-
-  useEffect(() => {
-    if (numOfCompletedHabits !== 0 && totalNumOfHabits !== 0)
-      setPercentage((numOfCompletedHabits / totalNumOfHabits * 100).toFixed());
-    else setPercentage(0);
-  }, [numOfCompletedHabits, totalNumOfHabits])
-
-  useEffect(() => { // useCallback
-    if (isAuth) {
-      getMe()
-        .then(data => setUser(data.user));
-    }
-  }, [isAuth])
-
-  const getUserIfAuth = async () => {
-    if (localStorage.getItem('token')) {
-      setIsAuth(true)
-    }
-    else setIsAuth(false) 
-  }
-
-  
-  const getAllFilters = () => {
+  const getAllFilters = useCallback(() => {
     let currFilters = new Set();
     habits?.forEach((habit) => {
       currFilters.add(habit.filter);
     })
     if (!isEqSet(currFilters, new Set(filters)))
       setSelectedFilter("all");
-    setFilters(Array.from(currFilters));
-  }
+    const filtersArr = Array.from(currFilters);
+    if (filtersArr.length > 0) 
+      setFilters(filtersArr);
+  }, [habits])
 
+  useEffect(() => {
+    getAllFilters(); //вынести 
+    console.log("Получаю все фильтры");
+  }, [getAllFilters])
+
+  useEffect(() => {
+    setTotalNumOfHabits(habits && habits.length);
+    if (habits.length > 0)
+      setVisibleHabits(habits);
+    console.log('habits changed');
+  }, [habits])
+
+  useEffect(() => {
+    if (numOfCompletedHabits !== 0 && totalNumOfHabits !== 0)
+      setPercentage((numOfCompletedHabits / totalNumOfHabits * 100).toFixed());
+    else setPercentage(0);
+  }, [numOfCompletedHabits, totalNumOfHabits])
+  
   const appendHabit = async (habit) => {
     addHabit(habit)
       .then(data => setHabits([...habits, data.newHabit]))
@@ -129,16 +119,16 @@ function MainPage() {
   }
 
   // /habits/update/:habitId
-  const setHabitStatus = async (habit, isCompleted) => {
+  const setHabitStatus = useCallback((habit, isCompleted) => {
     setHabitCompleted(habit._id, isCompleted)
       .then(() => onHabitStatusChange(habit, isCompleted))
-  }
+  }, [setHabitCompleted, habits])
 
-  const processEditHabit = (habit) => {
+  const processEditHabit = useCallback((habit) => {
     setEditingHabit(habit);
     modalMode.current = "edit";
     setIsModalOpen(true);
-  }
+  }, [])
 
   const replaceHabit = (habit) => {
     setHabits(habits.map(habitIn => {
@@ -156,14 +146,15 @@ function MainPage() {
       .then(() => replaceHabit(habit))
   }
 
-  const filterHabits = (filter) => {
+  const filterHabits = useCallback((filter) => {
     if (filter === "all") {
       setVisibleHabits(habits);
       setSelectedFilter("all")
-    } else
-      setVisibleHabits(habits.filter(habit => habit.filter === filter));
-      setSelectedFilter(filter)
-  }
+    } else {
+        setVisibleHabits(habits.filter(habit => habit.filter === filter));
+        setSelectedFilter(filter)
+    }
+  }, [habits])
   return (
         <main className="right-side">
           <Container maxWidth="lg">
@@ -177,6 +168,7 @@ function MainPage() {
               <ErrorBoundary>
                 <HabitList selectedFilter={selectedFilter} 
                 handleFilterClick={filterHabits} 
+                habitsLoading={habitsLoading}
                 mode={modalMode}
                 onButtonClick={setIsModalOpen} 
                 filters={filters} 
