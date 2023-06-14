@@ -27,24 +27,26 @@ function MainPage() {
   const [habitsLoading, setHabitsLoading] = useState(false)
   const [user] = useOutletContext();
   
-  const {setProcess, deleteHabit, addHabit, editHabit, setHabitCompleted, getHabits} = useHabitsAPI(user); // нужен юзер
+  const {process, setProcess, deleteHabit, addHabit, editHabit, setHabitCompleted, getHabits} = useHabitsAPI(user); // нужен юзер
   
   // console.log(habits);
-  // useWhyDidYouUpdate('MainPage', { habits, setHabitCompleted, deleteHabit });
+  useWhyDidYouUpdate('MainPage', { habits, habitsLoading, deleteHabit });
 
-  const removeHabit = useCallback(async function (habitId) {
-    setHabitsLoading(true);
+  const removeHabit = useCallback(function (habitId) {
+    setHabitsLoading(habitsLoading => true);
     deleteHabit(habitId)
       .then(() => setHabits(habits.filter((item) => item._id !== habitId)))
-      .then(setHabitsLoading(false))
-      .then(setProcess("confirmed"));
+      .then(() => setHabitsLoading(habitsLoading => false))
+      .then(() => setProcess("confirmed"));
   }, [habits, deleteHabit, setProcess]);
+
+  console.log(process);
 
   const isEqSet = (xs, ys) =>
     xs.size === ys.size &&
     [...xs].every((x) => ys.has(x));
 
-  const receiveHabits = useCallback(async () => {
+  const receiveHabits = useCallback(() => {
     setHabitsLoading(true);
     getHabits()
       .then(data => setHabits(data.habits))
@@ -69,7 +71,7 @@ function MainPage() {
   }, [habits]) //посчитать 1 раз?? 
 
 
-  const getAllFilters = useCallback(() => {
+  const getAllFilters = () => {
     let currFilters = new Set();
     habits?.forEach((habit) => {
       currFilters.add(habit.filter);
@@ -79,12 +81,12 @@ function MainPage() {
     const filtersArr = Array.from(currFilters);
     if (filtersArr.length > 0) 
       setFilters(filtersArr);
-  }, [habits])
+  }
 
   useEffect(() => {
     getAllFilters(); //вынести 
     console.log("Получаю все фильтры");
-  }, [getAllFilters])
+  }, [habits])
 
   useEffect(() => {
     setTotalNumOfHabits(habits && habits.length);
@@ -99,7 +101,7 @@ function MainPage() {
     else setPercentage(0);
   }, [numOfCompletedHabits, totalNumOfHabits])
   
-  const appendHabit = async (habit) => {
+  const appendHabit = (habit) => {
     addHabit(habit)
       .then(data => setHabits([...habits, data.newHabit]))
     console.log('добавляю')
@@ -175,6 +177,7 @@ function MainPage() {
                 habits={visibleHabits} 
                 numOfHabits={totalNumOfHabits} 
                 handleDelete={removeHabit}
+                process={process}
                 handleEdit={processEditHabit}
                 setHabitCompleted={setHabitStatus}></HabitList>
               </ErrorBoundary>

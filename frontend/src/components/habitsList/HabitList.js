@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import "./habitList.scss";
 import { Box, Stack, Chip, Button, Typography, Divider, LinearProgress } from "@mui/material";
 import HabitCheckBox from "../habitCheckBox/HabitCheckBox";
-import useFetch from "../../hooks/useFetch";
-import { useWhyDidYouUpdate } from 'ahooks';
 
 const setContent = (process, newItemLoading) => {
   switch (process){
@@ -39,9 +37,7 @@ const setContent = (process, newItemLoading) => {
 } 
 
 
-const HabitList = ({ mode, habitsLoading, handleFilterClick, onButtonClick, habits, handleDelete, numOfHabits, handleHabitClick, filters, selectedFilter, handleEdit, setHabitCompleted }) => {
-  const {process} = useFetch();
-  // useWhyDidYouUpdate('HabitList', { mode, habitsLoading, handleFilterClick, onButtonClick, habits, handleDelete, numOfHabits, handleHabitClick, filters, selectedFilter, handleEdit, setHabitCompleted });
+const HabitList = ({ process, mode, habitsLoading, handleFilterClick, onButtonClick, habits, handleDelete, numOfHabits, handleHabitClick, filters, selectedFilter, handleEdit, setHabitCompleted }) => {
   return (
     <>
       <Box>
@@ -100,12 +96,12 @@ const HabitList = ({ mode, habitsLoading, handleFilterClick, onButtonClick, habi
         {setContent(process, habitsLoading)}
 
         <Stack>
-          {habits && habits.length && habits.map((habit) => 
+          {habits && habits.length ? habits.map((habit) => 
           <HabitCheckBox key={habit._id} 
             habit={habit}
             setHabitCompleted={setHabitCompleted} 
             handleEdit={handleEdit}
-            handleDelete={handleDelete}/>)}
+            handleDelete={handleDelete}/>) : ""}
           
         </Stack>
       </Box>
