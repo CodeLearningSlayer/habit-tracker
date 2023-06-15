@@ -2,9 +2,12 @@ import { Box, Checkbox, Typography, Stack, IconButton } from "@mui/material";
 import React, { useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete"
 import EditIcon from '@mui/icons-material/Edit';
+import { removeHabit } from "../../store/slices/habitsSlice";
+import { useDispatch } from "react-redux";
 
 const HabitCheckBox = ({ modalMode, habit, handleClick, handleDelete, setHabitCompleted, handleEdit}) => {
   const [checked, setChecked] = useState(habit.isCompleted);
+  const dispatch = useDispatch();
   // console.log("рисую новый элемент");
   return (
     <Box
@@ -52,7 +55,8 @@ const HabitCheckBox = ({ modalMode, habit, handleClick, handleDelete, setHabitCo
           <EditIcon sx={{color:"#AFAFAF"}}/>
         </IconButton>
         <IconButton onClick={(e) => {
-          handleDelete(habit._id);
+          dispatch(removeHabit({id: habit._id}))
+          // handleDelete(habit._id);
           e.stopPropagation();
         }} sx={{ mr: "15px"}}>
           <DeleteIcon sx={{ color:"#AFAFAF"}}/>

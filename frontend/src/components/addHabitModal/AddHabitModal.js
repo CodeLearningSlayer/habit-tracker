@@ -1,6 +1,8 @@
 import { Button, Modal, Typography, Box, TextField, Fade, Backdrop, Autocomplete } from '@mui/material';
 import { useEffect, useState } from 'react';
 import {v4 as uuidv4} from "uuid";
+import { useDispatch } from 'react-redux';
+import { addHabit } from '../../store/slices/habitsSlice';
 
 const style = {
     position: 'absolute',
@@ -35,8 +37,10 @@ const inputStyle = {
       },
 }
 
-const AddHabitModal = ({isModalOpen, setIsModalOpen, filters, addHabit, habit, mode, editHabit}) => {
+const AddHabitModal = ({isModalOpen, setIsModalOpen, filters, habit, mode, editHabit}) => {
 
+    const dispatch = useDispatch(state => state.habits.habits);
+    // const addOneHabit =
     const [nameOfHabit, setNameOfHabit] = useState("");
     const [description, setDescription] = useState("");
     const [selectedFilter, setSelectedFilter] = useState(filters[0]);
@@ -125,15 +129,15 @@ const AddHabitModal = ({isModalOpen, setIsModalOpen, filters, addHabit, habit, m
                         <TextField multiline value={description} onChange={handleDecriptionChange} rows={2} sx={inputStyle} label={"Описание привычки"}/>
                         <Button onClick={() => {
                             mode.current === "creating" ?
-                            (() => {
-                                addHabit({
-                                    name: nameOfHabit,
-                                    description,
-                                    filter: inputValue,
-                                    isCompleted: false
-                                });
-                            })() : 
-                            
+                            (() => dispatch(addHabit({
+                                _id: "adsfdsa313as",
+                                name: nameOfHabit,
+                                description,
+                                filter: inputValue,
+                                isCompleted: false
+                                })
+                            ))()
+                                : 
                             (() => {
                                 editHabit({
                                     name: nameOfHabit,

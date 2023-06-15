@@ -1,8 +1,13 @@
 import React from "react";
 import { Divider, Button, Box, TextField } from "@mui/material";
 import { useForm, Controller, useFormState } from "react-hook-form";
-const RegisterForm = ({ registerUser, handleChangeModal }) => {
+import { useDispatch } from "react-redux";
+import { registerUser } from "../../store/slices/userSlice";
+
+
+const RegisterForm = ({handleChangeModal }) => {
   const { control, handleSubmit, watch } = useForm();
+  const dispatch = useDispatch();
   const styles = {
     "& .MuiOutlinedInput-root": {
         color:"#fff",
@@ -46,7 +51,7 @@ const RegisterForm = ({ registerUser, handleChangeModal }) => {
       email: data.email,
       password: data.password,
     };
-    registerUser(userObj);
+    dispatch(registerUser(userObj));
   };
 
   const watcher = watch();

@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import "./habitList.scss";
+import { useSelector, useDispatch } from "react-redux";
 import { Box, Stack, Chip, Button, Typography, Divider, LinearProgress } from "@mui/material";
 import HabitCheckBox from "../habitCheckBox/HabitCheckBox";
+import { addHabit } from "../../store/slices/habitsSlice";
+
 
 const setContent = (process, newItemLoading) => {
   switch (process){
@@ -37,7 +40,8 @@ const setContent = (process, newItemLoading) => {
 } 
 
 
-const HabitList = ({ process, mode, habitsLoading, handleFilterClick, onButtonClick, habits, handleDelete, numOfHabits, handleHabitClick, filters, selectedFilter, handleEdit, setHabitCompleted }) => {
+const HabitList = ({ process, mode, habitsLoading, handleFilterClick, onButtonClick, handleDelete, numOfHabits, filters, selectedFilter, handleEdit, setHabitCompleted }) => {
+  const habits = useSelector(state => state.habits.habits);
   return (
     <>
       <Box>

@@ -1,12 +1,15 @@
 import "./loginForm.scss"
 import React, {useState} from 'react';
 import { TextField, Divider, Button, Box } from "@mui/material";
+import { loginUser } from "../../store/slices/userSlice";
 import InputField from "../inputField/InputField";
+import { useDispatch } from "react-redux";
 
-const LoginForm = ({loginHandle, handleChangeModal}) => { // перенести обращение к серверу наверх
+const LoginForm = ({handleChangeModal}) => { // перенести обращение к серверу наверх
 
     const [login, setLogin] = useState("");
     const [password, setPassword] = useState("");
+    const dispatch = useDispatch();
 
     const handleChange = (type) => (e) => {
         switch (type) {
@@ -27,7 +30,7 @@ const LoginForm = ({loginHandle, handleChangeModal}) => { // перенести 
         <div className="overlay">
             <form className="login" onSubmit={(e) => {
                 e.preventDefault();
-                loginHandle({login, password});
+                dispatch(loginUser(({login, password})));
             }}>
                     <h3 className="login__name">Login to account</h3>
                     <Divider sx={{marginBottom: "55px", borderWidth: "2px", borderColor: "#fff"}}></Divider>

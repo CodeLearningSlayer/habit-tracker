@@ -1,7 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
+import { Provider } from 'react-redux';
 import App from './App';
+import store from './store';
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import Challenges from './pages/Challenges';
 import Achievements from './pages/Achievements';
@@ -30,6 +32,8 @@ const router = createBrowserRouter([
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <RouterProvider router={router}/>
+    <Provider store={store}>
+        <RouterProvider router={router}/>
+    </Provider>
 );
 

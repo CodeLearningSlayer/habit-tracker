@@ -47,7 +47,7 @@ function MainPage() {
     [...xs].every((x) => ys.has(x));
 
   const receiveHabits = useCallback(() => {
-    setHabitsLoading(true);
+    // setHabitsLoading(true);
     getHabits()
       .then(data => setHabits(data.habits))
       .then(setHabitsLoading(false))

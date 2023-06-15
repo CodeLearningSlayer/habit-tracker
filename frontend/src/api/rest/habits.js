@@ -40,7 +40,7 @@ const useHabitsAPI = (user) => {
 
     const setHabitCompleted = useCallback((habitId, isCompleted) => {
         const data = fetchNow(`${baseUrl}/update/${habitId}`, {
-            method: "POST",
+            method: "PATCH",
             headers: headers,
             body: JSON.stringify({status: isCompleted})
         })
@@ -50,7 +50,7 @@ const useHabitsAPI = (user) => {
 
     const editHabit = useCallback((habit) => {
         const data = fetchNow(`${baseUrl}/edit/${habit.habitId}`, {
-            method: "POST",
+            method: "PATCH",
             headers: headers,
             body: JSON.stringify(habit)
         });
