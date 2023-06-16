@@ -3,7 +3,6 @@ import { useCallback } from "react";
 
 const useHabitsAPI = (user) => {
     const {process, setProcess, fetchNow} = useFetch();
-
     const headers = new Headers(
         {'content-type': 'application/json',
         'authorization': localStorage.getItem('token')})

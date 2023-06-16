@@ -7,7 +7,6 @@ const router = new Router();
 router.post("/:id/habits/add", checkAuth, addHabit);
 router.post("/:id/habits/delete/:habitId", checkAuth, deleteHabit);
 router.get("/:id/allHabits", getAllHabits);
-router.post("/:id/habits/update/:habitId", checkAuth, setHabitCompleted);
-router.post("/:id/habits/edit/:habitId", checkAuth, editHabit);
-
-export default router
+router.patch("/:id/habits/update/:habitId", checkAuth, setHabitCompleted);
+router.patch("/:id/habits/edit/:habitId", checkAuth, editHabit);
+export default router;

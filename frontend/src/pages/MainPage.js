@@ -9,11 +9,11 @@ import InfoBox from "../components/infoBox/InfoBox";
 import ErrorBoundary from "../components/errorBoundary/ErrorBoundary";
 import { getDateAndDay } from "../utils/timeUtil.js";
 import useHabitsAPI from "../api/rest/habits.js";
-import { useOutletContext } from "react-router-dom";
-import { useWhyDidYouUpdate } from "ahooks";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchHabits, habitsSelector } from "../store/slices/habitsSlice.js";
 
 function MainPage() {
-  const [habits, setHabits] = useState([]);
+  // const [habits, setHabits] = useState([]);
   const [numOfCompletedHabits, setNumOfCompletedHabits] = useState(0);
   const [totalNumOfHabits, setTotalNumOfHabits] = useState(0);
   const [percentage, setPercentage] = useState(0);
@@ -25,22 +25,22 @@ function MainPage() {
   const modalMode = useRef("creating");
   const {date, day} = getDateAndDay();
   const [habitsLoading, setHabitsLoading] = useState(false)
-  const [user] = useOutletContext();
-  
-  const {process, setProcess, deleteHabit, addHabit, editHabit, setHabitCompleted, getHabits} = useHabitsAPI(user); // нужен юзер
-  
+  const {user} = useSelector(state => state.user.user);
+  const {process, setProcess, deleteHabit, addHabit, editHabit, setHabitCompleted} = useHabitsAPI(user); // нужен юзер
   // console.log(habits);
-  useWhyDidYouUpdate('MainPage', { habits, habitsLoading, deleteHabit });
+
+  const dispatch = useDispatch();
+  const habits = useSelector(habitsSelector);
+
 
   const removeHabit = useCallback(function (habitId) {
     setHabitsLoading(habitsLoading => true);
     deleteHabit(habitId)
-      .then(() => setHabits(habits.filter((item) => item._id !== habitId)))
+      // .then(() => setHabits(habits.filter((item) => item._id !== habitId)))
       .then(() => setHabitsLoading(habitsLoading => false))
       .then(() => setProcess("confirmed"));
   }, [habits, deleteHabit, setProcess]);
 
-  console.log(process);
 
   const isEqSet = (xs, ys) =>
     xs.size === ys.size &&
@@ -48,11 +48,10 @@ function MainPage() {
 
   const receiveHabits = useCallback(() => {
     // setHabitsLoading(true);
-    getHabits()
-      .then(data => setHabits(data.habits))
-      .then(setHabitsLoading(false))
-      .then(setProcess("confirmed"));
-  }, [getHabits]);
+    dispatch(fetchHabits())
+  }, [fetchHabits]);
+
+  console.log(habits);
 
   useEffect(() => {
     if (user !== null) {
@@ -93,6 +92,7 @@ function MainPage() {
     if (habits.length > 0)
       setVisibleHabits(habits);
     console.log('habits changed');
+
   }, [habits])
 
   useEffect(() => {
@@ -103,7 +103,7 @@ function MainPage() {
   
   const appendHabit = (habit) => {
     addHabit(habit)
-      .then(data => setHabits([...habits, data.newHabit]))
+      // .then(data => setHabits([...habits, data.newHabit]))
     console.log('добавляю')
   }
 
@@ -112,12 +112,12 @@ function MainPage() {
         setNumOfCompletedHabits(numOfCompletedHabits + 1);
       else
         setNumOfCompletedHabits(numOfCompletedHabits - 1);
-      setHabits(habits.map((habitIn) => {
-        if (habit._id === habitIn._id){
-          habitIn.isCompleted = isCompleted;
-        }
-        return habitIn;
-      }))
+      // setHabits(habits.map((habitIn) => {
+      //   if (habit._id === habitIn._id){
+      //     habitIn.isCompleted = isCompleted;
+      //   }
+      //   return habitIn;
+      // }))
   }
 
   // /habits/update/:habitId
@@ -133,14 +133,14 @@ function MainPage() {
   }, [])
 
   const replaceHabit = (habit) => {
-    setHabits(habits.map(habitIn => {
-      if (habit.habitId === habitIn._id) {
-        habitIn.name = habit.name;
-        habitIn.filter = habit.filter;
-        habitIn.description = habit.description;
-      }
-      return habitIn;
-    }))
+    // setHabits(habits.map(habitIn => {
+    //   if (habit.habitId === habitIn._id) {
+    //     habitIn.name = habit.name;
+    //     habitIn.filter = habit.filter;
+    //     habitIn.description = habit.description;
+    //   }
+    //   return habitIn;
+    // }))
   }
 
   const editHabitOnServer = async (habit) => {

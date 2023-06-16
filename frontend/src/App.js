@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import "./styles/style.scss";
-import { loginUser } from "./store/slices/userSlice";
 import LoginForm from "./components/loginForm/LoginForm.js";
 import RegisterForm from "./components/registerForm/RegisterForm";
 import { Container } from "@mui/material";
@@ -74,7 +73,7 @@ function App() {
         <SideBar name={user?.username} activeNum={activeNum}  clickHandle={handleTabClick} timeOfTheDay={timeOfTheDay} logout={logout}/>
         <main className="right-side">
           <Container maxWidth="lg">
-            {/* <Outlet context={[user, isAuth]}/> */}
+            <Outlet />
           </Container>
         </main>
       </div>

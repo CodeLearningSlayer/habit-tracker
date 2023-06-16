@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import useUserAPI from "../../api/rest/user";
 
 const baseUrl = "http://localhost:3010/api";
 const headers = new Headers({
@@ -83,7 +82,6 @@ export const getMe = createAsyncThunk(
 const setError = (state, action) => {
     state.status = "rejected";
     state.error = action.payload;
-    console.log(action.payload);
 }
 
 const userSlice = createSlice({
@@ -93,37 +91,35 @@ const userSlice = createSlice({
         status : null,
         error: null
     },
-    reducers: {
-        
-    },
-    extraReducers: {
-        [registerUser.pending]: (state) => {
+    extraReducers: (builder) => {
+        builder
+            .addCase(registerUser.pending, state => {
             state.status = "loading";
             state.error = null;
-        },
-        [registerUser.fulfilled]: (state, action) => {
-            state.status = "resolved";
-            state.user = action.payload;
-        },
-        [loginUser.pending]: (state) => {
-            state.status = "loading";
-            state.error = null;
-        },
-        [loginUser.fulfilled]: (state, action) => {
-            state.status = "resolved";
-            state.user = action.payload;
-        },
-        [getMe.pending]: (state) => {
-            state.status = "loading";
-            state.error = null;
-        },
-        [getMe.fulfilled]: (state, action) => {
-            state.status = "fulfilled";
-            state.user = action.payload;
-        },
-        [registerUser.rejected]: setError,
-        [loginUser.rejected]: setError,
-        [getMe.rejected]: setError
+            })
+            .addCase(registerUser.fulfilled, (state, action) => {
+                state.status = "resolved";
+                state.user = action.payload;
+            })
+            .addCase(loginUser.pending, (state) => {
+                state.status = "loading";
+                state.error = null;
+            })
+            .addCase(loginUser.fulfilled, (state, action) => {
+                state.status = "resolved";
+                state.user = action.payload;
+            })
+            .addCase(getMe.pending, (state) => {
+                state.status = "loading";
+                state.error = null;
+            })
+            .addCase(getMe.fulfilled, (state, action) => {
+                state.status = "fulfilled";
+                state.user = action.payload;
+            })
+            .addCase(registerUser.rejected, setError)
+            .addCase(loginUser.rejected, setError)
+            .addCase(getMe.rejected, setError)
     }
 })
 
