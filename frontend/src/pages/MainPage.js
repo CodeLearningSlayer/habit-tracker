@@ -48,7 +48,7 @@ function MainPage() {
 
   const receiveHabits = useCallback(() => {
     // setHabitsLoading(true);
-    dispatch(fetchHabits())
+    console.log(dispatch(fetchHabits()));
   }, [fetchHabits]);
 
   console.log(habits);

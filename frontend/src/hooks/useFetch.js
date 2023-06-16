@@ -21,4 +21,5 @@ const useFetch = () => {
     return {process, setProcess, fetchNow}
 }
 
+
 export default useFetch;

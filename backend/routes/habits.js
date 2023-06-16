@@ -5,7 +5,7 @@ import { addHabit, deleteHabit, editHabit, getAllHabits, setHabitCompleted } fro
 const router = new Router();
 
 router.post("/:id/habits/add", checkAuth, addHabit);
-router.post("/:id/habits/delete/:habitId", checkAuth, deleteHabit);
+router.delete("/:id/habits/delete/:habitId", checkAuth, deleteHabit);
 router.get("/:id/allHabits", getAllHabits);
 router.patch("/:id/habits/update/:habitId", checkAuth, setHabitCompleted);
 router.patch("/:id/habits/edit/:habitId", checkAuth, editHabit);
