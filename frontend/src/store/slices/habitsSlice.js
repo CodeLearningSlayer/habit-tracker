@@ -23,6 +23,8 @@ const habitsAdapter = createEntityAdapter({
 });
 
 const initialState = habitsAdapter.getInitialState({
+  totalHabits: 0,
+  completedHabits: 0,
   status: null,
   error: null,
   user: null,
@@ -31,10 +33,11 @@ const initialState = habitsAdapter.getInitialState({
 // проблема в несуществующем юзере
 export const fetchHabits = createAsyncThunk(
   "habits/getHabits",
-  async (state, { rejectWithValue, getState }) => {
+  async (state, { rejectWithValue, getState, dispatch }) => {
     try {
       const { user } = getState().user.user;
       const habits = await request(`${baseUrl}/${user._id}/allHabits`); //userа записать в стейт
+      console.log(dispatch(countCompletedHabits(habits)));
       return habits;
     } catch (e) {
       rejectWithValue(e.message);
@@ -124,6 +127,14 @@ const habitsSlice = createSlice({
     addHabit(state, action) {
       habitsAdapter.addOne(state, action.payload);
     },
+    countCompletedHabits(state, action) {
+      let counter = 0;
+      for (let item of action.payload.habits) {
+        if (item.isCompleted)
+          counter += 1
+      }
+      state.completedHabits = counter;
+    },
     removeHabit(state, action) {
       habitsAdapter.removeOne(state, action.payload.id);
     },
@@ -144,6 +155,13 @@ const habitsSlice = createSlice({
           isCompleted: action.payload.status,
         },
       });
+      if (action.payload.isCompleted) {
+        console.log("+1");
+        state.completedHabits += 1;
+      } else {
+        state.completedHabits -= 1;
+        console.log("-1");
+      }
     },
   },
   extraReducers: (builder) => {
@@ -156,7 +174,8 @@ const habitsSlice = createSlice({
         state.status = "resolved";
         console.log("проверяю payload", action.payload);
         if (action.payload) {
-          habitsAdapter.setAll(state, action.payload);
+          habitsAdapter.setAll(state, action.payload.habits);
+          state.totalHabits = action.payload.habits.length;
         }
       })
       .addCase(fetchHabits.rejected, setError);
@@ -166,8 +185,25 @@ const { selectAll } = habitsAdapter.getSelectors((state) => {
   return state.habits;
 });
 
-export const habitsSelector = createSelector((state) => state, selectAll);
+export const filteredHabitsSelector = createSelector(
+  (state) => state.filters.activeFilter,
+  selectAll,
+  (filter, habits) => {
+    if (filter === "all") {
+      console.log("all");
+      return habits
+    } else {
+      return habits.filter(habit => habit.filter === filter);
+    }
+  }
+);
 
-export const { addHabit, removeHabit, editHabit, setHabitStatus, getHabits } =
-  habitsSlice.actions;
+export const habitsSelector = createSelector(
+  state => {
+    return state;
+  },
+  selectAll
+)
+
+export const { addHabit, removeHabit, editHabit, setHabitStatus, getHabits, countCompletedHabits } = habitsSlice.actions;
 export default habitsSlice.reducer;

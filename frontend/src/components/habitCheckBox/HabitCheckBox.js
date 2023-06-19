@@ -15,7 +15,7 @@ const HabitCheckBox = ({ modalMode, habit, handleClick, handleDelete, setHabitCo
       onClick={
         () => {
             setChecked(!checked);
-            setHabitCompleted(habit, !checked);
+            dispatch(setHabitCompleted({id: habit._id, isCompleted: !checked}));
         }}
       width={"100%"}
       sx={{

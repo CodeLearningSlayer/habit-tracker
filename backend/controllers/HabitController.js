@@ -65,13 +65,13 @@ export const setHabitCompleted = async(req, res) => {
         const habit = await Habit.findOne({_id: req.params.habitId, user: req.params.id});
         habit.set({isCompleted: req.body.status});
         await habit.save();
+        res.json({message: `updated successfully, now status is ${habit.isCompleted}`});
         console.log(habit);
     }
     catch(err) {
             res.status(500).json({message: "error while updating"});
             console.log(err);
     }
-    res.json({message: "updated successfully"});
 }
 
 export const editHabit = async(req, res) => {

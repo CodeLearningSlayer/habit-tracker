@@ -3,8 +3,9 @@ import "./habitList.scss";
 import { useSelector, useDispatch } from "react-redux";
 import { Box, Stack, Chip, Button, Typography, Divider, LinearProgress } from "@mui/material";
 import HabitCheckBox from "../habitCheckBox/HabitCheckBox";
-import { addHabit } from "../../store/slices/habitsSlice";
-
+import { addHabit, toggleHabit } from "../../store/slices/habitsSlice";
+import { filterPressed } from "../../store/slices/filtersSlice";
+import { filteredHabitsSelector } from "../../store/slices/habitsSlice";
 
 const setContent = (process, newItemLoading) => {
   switch (process){
@@ -40,8 +41,10 @@ const setContent = (process, newItemLoading) => {
 } 
 
 
-const HabitList = ({ process, mode, habitsLoading, handleFilterClick, onButtonClick, handleDelete, numOfHabits, filters, selectedFilter, handleEdit, setHabitCompleted }) => {
-  const habits = useSelector(state => state.habits.habits);
+const HabitList = ({habits, mode, habitsLoading, onButtonClick, handleDelete, numOfHabits, filters, handleEdit, setHabitCompleted }) => {
+  // const habits = useSelector(filteredHabitsSelector);
+  const dispatch = useDispatch();
+  const selectedFilter = useSelector(state => state.filters.activeFilter)
   return (
     <>
       <Box>
@@ -54,7 +57,7 @@ const HabitList = ({ process, mode, habitsLoading, handleFilterClick, onButtonCl
           <Chip
                 sx={{ borderRadius: "10px", mr: `15px`, color: "#fff", textTransform: "uppercase", fontSize: "20px", borderColor: "#F84343"}}
                 onClick={() => {
-                  handleFilterClick('all');
+                  dispatch(filterPressed('all'));
                 }
                }
                 label="All"
@@ -70,7 +73,7 @@ const HabitList = ({ process, mode, habitsLoading, handleFilterClick, onButtonCl
                 sx={{ borderRadius: "10px", mr: `${mr}px`, color: "#fff", textTransform: "uppercase", fontSize: "20px", borderColor: "#F84343",
                 }}
                 onClick={() => {
-                  handleFilterClick(filter);
+                  dispatch(filterPressed(filter));
                 }
                }
                 label={filter}
@@ -97,13 +100,13 @@ const HabitList = ({ process, mode, habitsLoading, handleFilterClick, onButtonCl
           </Box>
         </Stack>
         
-        {setContent(process, habitsLoading)}
+        {/* {setContent(process, habitsLoading)} */}
 
         <Stack>
           {habits && habits.length ? habits.map((habit) => 
           <HabitCheckBox key={habit._id} 
             habit={habit}
-            setHabitCompleted={setHabitCompleted} 
+            setHabitCompleted={toggleHabit} 
             handleEdit={handleEdit}
             handleDelete={handleDelete}/>) : ""}
           
