@@ -6,7 +6,9 @@ const Calendar = () => {
     return (
         <div className='info-box__calendar'>
             <LocalizationProvider dateAdapter={AdapterDayjs} localeText={ruRU.components.MuiLocalizationProvider.defaultProps.localeText}>
-            <DateCalendar showDaysOutsideCurrentMonth readOnly sx={{
+            <DateCalendar showDaysOutsideCurrentMonth
+                onMonthChange={(month) => console.log(new Date(month.$d).toLocaleString('en', {month: 'long', }))}
+                readOnly sx={{
                 border: "1px solid #FF0505",
                 borderRadius: "8px",
                 maxWidth: "388px",
