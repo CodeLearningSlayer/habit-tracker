@@ -28,6 +28,7 @@ function MainPage() {
   const habits = useSelector(habitsSelector);
   const {completedHabits, totalHabits} = useSelector(state => state.habits)
   const {filters} = useSelector(state => state.filters);
+ 
   const receiveHabits = useCallback(() => {
     // setHabitsLoading(true);
     dispatch(fetchHabits());
@@ -50,19 +51,11 @@ function MainPage() {
 
 
   useEffect(() => {
-    if (numOfCompletedHabits !== 0 && totalNumOfHabits !== 0)
-      setPercentage((numOfCompletedHabits / totalNumOfHabits * 100).toFixed());
+    if (completedHabits !== 0 && totalHabits !== 0)
+      setPercentage((completedHabits / totalHabits * 100).toFixed());
     else setPercentage(0);
-  }, [numOfCompletedHabits, totalNumOfHabits])
+  }, [completedHabits, totalHabits])
   
-
-  const onHabitStatusChange = (habit, isCompleted) => {
-    if (isCompleted) 
-        setNumOfCompletedHabits(numOfCompletedHabits + 1);
-      else
-        setNumOfCompletedHabits(numOfCompletedHabits - 1);
-  }
-
 
   const processEditHabit = useCallback((habit) => {
     setEditingHabit(habit);
@@ -70,9 +63,6 @@ function MainPage() {
     setIsModalOpen(true);
   }, [])
 
-  const replaceHabit = (habit) => {
-
-  }
 
   return (
         <main className="right-side">

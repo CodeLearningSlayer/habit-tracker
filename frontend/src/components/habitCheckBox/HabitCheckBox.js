@@ -15,7 +15,7 @@ const HabitCheckBox = ({ modalMode, habit, handleClick, handleDelete, setHabitCo
       onClick={
         () => {
             setChecked(!checked);
-            dispatch(setHabitCompleted({id: habit._id, isCompleted: !checked}));
+            console.log(dispatch(setHabitCompleted({id: habit._id, isCompleted: !checked})));
         }}
       width={"100%"}
       sx={{
@@ -56,7 +56,6 @@ const HabitCheckBox = ({ modalMode, habit, handleClick, handleDelete, setHabitCo
         </IconButton>
         <IconButton onClick={(e) => {
           dispatch(removeHabit({id: habit._id}))
-          // handleDelete(habit._id);
           e.stopPropagation();
         }} sx={{ mr: "15px"}}>
           <DeleteIcon sx={{ color:"#AFAFAF"}}/>

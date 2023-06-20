@@ -152,15 +152,13 @@ const habitsSlice = createSlice({
       habitsAdapter.updateOne(state, {
         id: action.payload.id,
         changes: {
-          isCompleted: action.payload.status,
+          isCompleted: action.payload.isCompleted,
         },
       });
       if (action.payload.isCompleted) {
-        console.log("+1");
         state.completedHabits += 1;
       } else {
         state.completedHabits -= 1;
-        console.log("-1");
       }
     },
   },
@@ -172,7 +170,6 @@ const habitsSlice = createSlice({
       })
       .addCase(fetchHabits.fulfilled, (state, action) => {
         state.status = "resolved";
-        console.log("проверяю payload", action.payload);
         if (action.payload) {
           habitsAdapter.setAll(state, action.payload.habits);
           state.totalHabits = action.payload.habits.length;
