@@ -1,8 +1,7 @@
 import { Button, Modal, Typography, Box, TextField, Fade, Backdrop, Autocomplete } from '@mui/material';
 import { useEffect, useState } from 'react';
-import {v4 as uuidv4} from "uuid";
 import { useDispatch } from 'react-redux';
-import { addHabit } from '../../store/slices/habitsSlice';
+import { appendHabit, modifyHabit } from '../../store/slices/habitsSlice';
 
 const style = {
     position: 'absolute',
@@ -129,8 +128,7 @@ const AddHabitModal = ({isModalOpen, setIsModalOpen, filters, habit, mode, editH
                         <TextField multiline value={description} onChange={handleDecriptionChange} rows={2} sx={inputStyle} label={"Описание привычки"}/>
                         <Button onClick={() => {
                             mode.current === "creating" ?
-                            (() => dispatch(addHabit({
-                                _id: "adsfdsa313as",
+                            (() => dispatch(appendHabit({
                                 name: nameOfHabit,
                                 description,
                                 filter: inputValue,
@@ -139,12 +137,12 @@ const AddHabitModal = ({isModalOpen, setIsModalOpen, filters, habit, mode, editH
                             ))()
                                 : 
                             (() => {
-                                editHabit({
+                                dispatch(modifyHabit({
                                     name: nameOfHabit,
                                     description,
                                     filter: inputValue,
                                     habitId: habit._id
-                                })
+                                }))
                             })()
                             setIsModalOpen(false)
                         }} sx={{

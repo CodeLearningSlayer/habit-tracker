@@ -1,12 +1,9 @@
-import React, { useState } from "react";
 import "./habitList.scss";
 import { useSelector, useDispatch } from "react-redux";
 import { Box, Stack, Chip, Button, Typography, Divider, LinearProgress } from "@mui/material";
 import HabitCheckBox from "../habitCheckBox/HabitCheckBox";
-import { addHabit, toggleHabit } from "../../store/slices/habitsSlice";
+import { toggleHabit } from "../../store/slices/habitsSlice";
 import { filterPressed } from "../../store/slices/filtersSlice";
-import { filteredHabitsSelector } from "../../store/slices/habitsSlice";
-import {useWhyDidYouUpdate} from "ahooks";
 
 const setContent = (process, newItemLoading) => {
   switch (process){
@@ -43,10 +40,8 @@ const setContent = (process, newItemLoading) => {
 
 
 const HabitList = ({habits, mode, habitsLoading, onButtonClick, handleDelete, numOfHabits, filters, handleEdit }) => {
-  // const habits = useSelector(filteredHabitsSelector);
   const dispatch = useDispatch();
   const selectedFilter = useSelector(state => state.filters.activeFilter)
-  useWhyDidYouUpdate("HabitList", {habits, mode, habitsLoading, onButtonClick, handleDelete, numOfHabits, filters, handleEdit });
   return (
     <>
       <Box>

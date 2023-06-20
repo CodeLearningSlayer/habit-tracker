@@ -8,15 +8,11 @@ import PickerLegend from "../components/pickerLegend/PickerLegend";
 import InfoBox from "../components/infoBox/InfoBox";
 import ErrorBoundary from "../components/errorBoundary/ErrorBoundary";
 import { getDateAndDay } from "../utils/timeUtil.js";
-import useHabitsAPI from "../api/rest/habits.js";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchHabits, filteredHabitsSelector } from "../store/slices/habitsSlice.js";
-import { getFilters, filterPressed } from "../store/slices/filtersSlice.js";
+import { getFilters } from "../store/slices/filtersSlice.js";
 import { habitsSelector } from "../store/slices/habitsSlice.js";
 function MainPage() {
-  // const [habits, setHabits] = useState([]);
-  const [numOfCompletedHabits, setNumOfCompletedHabits] = useState(0);
-  const [totalNumOfHabits, setTotalNumOfHabits] = useState(0);
   const [percentage, setPercentage] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingHabit, setEditingHabit] = useState({});
@@ -30,7 +26,6 @@ function MainPage() {
   const {filters} = useSelector(state => state.filters);
  
   const receiveHabits = useCallback(() => {
-    // setHabitsLoading(true);
     dispatch(fetchHabits());
   }, [fetchHabits]);
 
@@ -48,21 +43,17 @@ function MainPage() {
     }
   }, [habits])
 
-
-
   useEffect(() => {
     if (completedHabits !== 0 && totalHabits !== 0)
       setPercentage((completedHabits / totalHabits * 100).toFixed());
     else setPercentage(0);
   }, [completedHabits, totalHabits])
-  
 
   const processEditHabit = useCallback((habit) => {
     setEditingHabit(habit);
     modalMode.current = "edit";
     setIsModalOpen(true);
   }, [])
-
 
   return (
         <main className="right-side">
@@ -78,7 +69,6 @@ function MainPage() {
                 <HabitList 
                 mode={modalMode}
                 onButtonClick={setIsModalOpen}
-                handleFilterClick={dispatch(filterPressed)} 
                 filters={filters} 
                 habits={filteredHabits}
                 numOfHabits={totalHabits} 

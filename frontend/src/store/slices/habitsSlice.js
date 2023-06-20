@@ -84,7 +84,7 @@ export const toggleHabit = createAsyncThunk(
 
 export const deleteHabit = createAsyncThunk(
   "habits/deleteHabit",
-  async (id, { rejectWithValue, dispatch, getState }) => {
+  async ({id, isCompleted}, { rejectWithValue, dispatch, getState }) => {
     try{
         const { user } = getState().user.user;
         const info = await request(`${baseUrl}/${user._id}/habits/delete/${id}`, {
@@ -92,7 +92,7 @@ export const deleteHabit = createAsyncThunk(
             headers
         })
         
-        dispatch(removeHabit(id));
+        dispatch(removeHabit({id, isCompleted}));
         return info;
     }
     catch(e) {
@@ -104,14 +104,19 @@ export const deleteHabit = createAsyncThunk(
 export const modifyHabit = createAsyncThunk(
     "habits/editHabit",
     async (habit, {getState, rejectWithValue, dispatch}) => {
+      try{
         const {user} = getState().user.user
-        const data = await request(`${baseUrl}/${user}/habits/edit`, {
+        const data = await request(`${baseUrl}/${user._id}/habits/edit/${habit.habitId}`, {
             method: "PATCH",
             headers: headers,
             body: JSON.stringify(habit)
         });
         dispatch(editHabit(habit));
         return data;
+      }
+      catch(e) {
+        rejectWithValue(e.message);
+      }
     }
 )
 
@@ -125,7 +130,8 @@ const habitsSlice = createSlice({
   initialState,
   reducers: {
     addHabit(state, action) {
-      habitsAdapter.addOne(state, action.payload);
+      habitsAdapter.addOne(state, action.payload.newHabit);
+      state.totalHabits += 1;
     },
     countCompletedHabits(state, action) {
       let counter = 0;
@@ -137,14 +143,20 @@ const habitsSlice = createSlice({
     },
     removeHabit(state, action) {
       habitsAdapter.removeOne(state, action.payload.id);
+      state.totalHabits -= 1;
+      console.log(action.payload);
+      if (action.payload.isCompleted)
+        state.completedHabits -= 1;
+      
     },
     editHabit(state, action) {
+      console.log(action.payload);
       habitsAdapter.updateOne(state, {
-        id: action.payload.id,
+        id: action.payload.habitId,
         changes: {
-          name: action.payload.newName,
-          description: action.payload.newDescription,
-          filter: action.payload.newFilter,
+          name: action.payload.name,
+          description: action.payload.description,
+          filter: action.payload.filter,
         },
       });
     },
