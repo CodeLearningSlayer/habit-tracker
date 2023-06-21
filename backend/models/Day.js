@@ -3,4 +3,4 @@ const DaySchema = new mongoose.Schema({
     day: {type: Date, required: true}
 })
 
-export default mongoose.Model('Day', DaySchema);
+export default mongoose.model('Day', DaySchema);

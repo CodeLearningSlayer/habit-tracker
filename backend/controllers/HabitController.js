@@ -60,7 +60,6 @@ export const deleteHabit = async (req, res) => {
 }
 
 export const setHabitCompleted = async(req, res) => {
-    console.log(req.body);
     try{
         const habit = await Habit.findOne({_id: req.params.habitId, user: req.params.id});
         habit.set({isCompleted: req.body.status});
