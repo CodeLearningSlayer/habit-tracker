@@ -65,12 +65,31 @@ export const setHabitCompleted = async(req, res) => {
         habit.set({isCompleted: req.body.status});
         await habit.save();
         res.json({message: `updated successfully, now status is ${habit.isCompleted}`});
-        console.log(habit);
     }
     catch(err) {
             res.status(500).json({message: "error while updating"});
             console.log(err);
     }
+}
+
+export const resetAndGetAllHabits = async(req, res) => {
+  try{
+    const {id} = req.params;
+    console.log(id);
+    // const allUserHabits = await Habit.find({user: req.params.userId});
+    const user = await User.findById(id).populate("habits").exec();
+    const {habits} = user;
+    for (let habit of habits) {
+      console.log(habit);
+      habit.set({isCompleted: false});
+      await habit.save();
+    }
+    res.status(200).json(habits);
+  }
+  catch(e) {
+    console.log(e.message);
+    res.status(500).json("Ошибка сброса привычек");
+  }
 }
 
 export const editHabit = async(req, res) => {

@@ -2,11 +2,28 @@ import Day from "../models/Day.js";
 import Month from "../models/Month.js";
 import User from "../models/User.js";
 
+const monthsDict = {
+    "january" : 1,
+    "february" : 2,
+    "march": 3,
+    "april": 4,
+    "may": 5,
+    "june": 6,
+    "july": 7,
+    "august": 8,
+    "september": 9,
+    "october": 10,
+    "november": 11,
+    "december": 12
+}
+
 export const getMonth = async (req, res) => {
     try{ 
         const {monthName, userId} = req.params;
+        if (!(monthName in monthsDict)) {
+            res.status(500).json("неправильный формат месяца");
+        }
         const user = await User.findById(userId).populate("months").exec();
-        console.log(user);
         const months = user.months || {};
         const monthToResponse = months.find(month => month.name == monthName);
         if (!monthToResponse) {
@@ -45,7 +62,6 @@ export const changeDayStatus = async(req, res) => {
         const day = MonthOfDay.days[0];
         day.set({status});
         await day.save();
-        console.log(day);
         res.status(200).json("Статус дня изменён");
     }
     catch(e){
@@ -54,7 +70,7 @@ export const changeDayStatus = async(req, res) => {
     }
 }
 
-export const createDayRecord = async(req, res) => {
+export const createDayRecordIfNotCreated = async(req, res) => {
     try{
         const {month, userId} = req.params;
         const {day} = req.body;
@@ -65,7 +81,7 @@ export const createDayRecord = async(req, res) => {
         const receivedDay = MonthOfDay.days[0]; 
 
         if (receivedDay) {
-            res.status(200).json({message: "Запись по данному дню ведётся"})
+            res.status(200).json({message: "Запись по данному дню ведётся", status: "recording"})
             return;
         }
 
@@ -77,7 +93,7 @@ export const createDayRecord = async(req, res) => {
 
         await newDay.save();
         await Month.findOneAndUpdate({name: month, user: userId}, {$push: {days: newDay}})
-        res.status(200).json({message: "День успешно добавлен"});
+        res.status(200).json({message: "День успешно добавлен", status: "new day"});
     }
     catch(e) {
         res.status(500).json(e.message);
